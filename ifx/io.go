@@ -14,4 +14,7 @@ type StreamWriter func(io.Writer) Encoder
 type StreamReader func(io.Reader) Decoder
 
 type Compressor func(w io.Writer) (io.WriteCloser, error)
-type Decompressor func(r io.Reader) io.ReadCloser
+type MustCompressor func(w io.Writer) io.WriteCloser
+
+type Decompressor func(r io.Reader) (io.ReadCloser, error)
+type MustDecompressor func(r io.Reader) io.ReadCloser
