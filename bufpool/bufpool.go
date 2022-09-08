@@ -47,7 +47,7 @@ func (p *BufferPool) Get(length int) *bytes.Buffer {
 		bp.Reset()
 		return bp
 	}
-	return bytes.NewBuffer(make([]byte, 0, 1<<idx)[:uint32(length)])
+	return bytes.NewBuffer(make([]byte, 0, 1<<idx)[:0])
 }
 
 func (p *BufferPool) New(length int) *bytes.Buffer {
