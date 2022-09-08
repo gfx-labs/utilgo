@@ -1,28 +1,28 @@
 package lambda
 
-func Foldr[T any](xs []T, fx func(T, T) T) T {
+func Foldl[T any](x T, xs []T, fx func(T, T) T) T {
+	if len(xs) == 0 {
+		return x
+	}
+	return Foldl(fx(x, xs[0]), xs[1:], fx)
+}
+func Foldl1[T any](xs []T, fx func(T, T) T) T {
 	if len(xs) < 1 {
 		return *new(T)
 	}
-	if len(xs) == 1 {
-		return xs[0]
-	}
-	for i := 1; i < len(xs); i++ {
-		xs[0] = fx(xs[0], xs[i])
-	}
-	return xs[0]
+	return Foldl(xs[0], xs[1:], fx)
 }
 
-func Foldl[T any](xs []T, fx func(T, T) T) T {
+func Foldr[T any](x T, xs []T, fx func(T, T) T) T {
+	if len(xs) == 0 {
+		return x
+	}
+	return Foldr(fx(xs[len(xs)-1], x), xs[:len(xs)-1], fx)
+}
+
+func Foldr1[T any](xs []T, fx func(T, T) T) T {
 	if len(xs) < 1 {
 		return *new(T)
 	}
-	if len(xs) == 1 {
-		return xs[0]
-	}
-	li := len(xs) - 1
-	for i := li - 1; i >= 0; i-- {
-		xs[li] = fx(xs[li], xs[i])
-	}
-	return xs[li]
+	return Foldr(xs[len(xs)-1], xs[:len(xs)-1], fx)
 }
