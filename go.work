@@ -5,5 +5,6 @@ use (
 	./bufpool
 	./generic
 	./graceful
+	./gun
 	./lambda
 )
