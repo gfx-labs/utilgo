@@ -60,6 +60,7 @@ func (p *BufferPool) Put(buf *bytes.Buffer) {
 		return
 	}
 	capacity := buf.Cap()
+	buf.Reset()
 	if capacity == 0 || capacity > MaxLength {
 		allocator.Put(buf)
 		return // drop it

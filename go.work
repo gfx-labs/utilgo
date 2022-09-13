@@ -4,5 +4,6 @@ use (
 	.
 	./bufpool
 	./generic
+	./graceful
 	./lambda
 )
