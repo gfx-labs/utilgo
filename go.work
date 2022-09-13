@@ -6,5 +6,6 @@ use (
 	./generic
 	./graceful
 	./gun
+	./ifx
 	./lambda
 )
