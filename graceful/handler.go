@@ -12,13 +12,10 @@ import (
 
 // StartFunc is a function that uses a context and returns an error if any bit fails to run. it will be run on a new goroutine using context.background()
 // it should not block.
-type StartFunc func(ctx context.Context) error
+type StartFunc func(ctx context.Context, done <-chan struct{}) error
 
 // this is the function that will be run on shutdown. the context will be canclled in DefaultShutdownTimeout after ctrl-c is called
 type ShutdownFunc func(context.Context) error
-
-// this is in how long the context will be cancelled.
-// you can modify it for your application
 
 // handler runs a function that uses a context and then shuts it down  on ctrl-c
 // the startfunc should not block
@@ -26,6 +23,7 @@ type ShutdownFunc func(context.Context) error
 // the Handler itself will block
 func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc) error {
 	var (
+		doneChan = make(chan struct{})
 		stopChan = make(chan os.Signal)
 		errChan  = make(chan error)
 	)
@@ -34,22 +32,17 @@ func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc)
 	go func() {
 		signal.Notify(stopChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 		<-stopChan
+		close(doneChan)
 		timer, cn := context.WithTimeout(ctx, shutdownTime)
 		defer cancel()
 		defer cn()
-		go func() {
-			if err := shutdown(timer); err != nil {
-				errChan <- errors.WithStack(err)
-				return
-			}
-			errChan <- nil
-		}()
-		select {
-		case <-timer.Done():
-			errChan <- timer.Err()
+		if err := shutdown(timer); err != nil {
+			errChan <- errors.WithStack(err)
+			return
 		}
+		errChan <- nil
 	}()
-	if err := start(ctx); err != nil {
+	if err := start(ctx, doneChan); err != nil {
 		return errors.WithStack(err)
 	}
 	return <-errChan
