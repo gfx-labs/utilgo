@@ -113,11 +113,11 @@ func WeightedChoiceT[T any](choices []ChoiceT[T]) (ChoiceT[T], error) {
 	panic("should not ever reach this point. error in util/go/generic rand.go")
 }
 
-func InverseWeightedChoiceT[T any](choices []ChoiceT[T]) (ChoiceT[T], error) {
+func InverseWeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
 	sum := 0
 	for _, c := range choices {
 		if c.Weight == 0 {
-			return c, nil
+			return c
 		}
 		sum += c.Weight
 	}
@@ -131,7 +131,7 @@ func InverseWeightedChoiceT[T any](choices []ChoiceT[T]) (ChoiceT[T], error) {
 	for _, c := range choices {
 		r -= c.inv
 		if r < 0 {
-			return c, nil
+			return c
 		}
 	}
 	panic("should not ever reach this point. error in util/go/generic rand.go")
