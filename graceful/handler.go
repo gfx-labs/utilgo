@@ -35,8 +35,8 @@ func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc)
 		signal.Notify(stopChan, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 		<-stopChan
 		timer, cn := context.WithTimeout(ctx, shutdownTime)
+		defer cancel()
 		defer cn()
-		cancel()
 		go func() {
 			if err := shutdown(timer); err != nil {
 				errChan <- errors.WithStack(err)
