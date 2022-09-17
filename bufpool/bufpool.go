@@ -79,6 +79,14 @@ func Get(length int) *bytes.Buffer {
 func Put(slice *bytes.Buffer) {
 	GlobalPool.Put(slice)
 }
+func GetStd() *bytes.Buffer {
+	return GlobalPool.GetStd()
+}
+
+// Put returns a buffer to the global buffer pool.
+func PutStd(slice *bytes.Buffer) {
+	GlobalPool.PutStd(slice)
+}
 
 // Log of base two, round up (for v > 0).
 func nextLogBase2(v uint32) uint32 {
