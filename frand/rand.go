@@ -81,11 +81,11 @@ func ChoiceInt(choices []int) int {
 
 type Choice = ChoiceT[any]
 
-func WeightedChoice(choices []Choice) (Choice, error) {
+func WeightedChoice(choices []Choice) Choice {
 	return WeightedChoiceT(choices)
 }
 
-func InverseWeightedChoice(choices []Choice) (Choice, error) {
+func InverseWeightedChoice(choices []Choice) Choice {
 	return InverseWeightedChoiceT(choices)
 }
 
@@ -98,7 +98,7 @@ type ChoiceT[T any] struct {
 	inv int
 }
 
-func WeightedChoiceT[T any](choices []ChoiceT[T]) (ChoiceT[T], error) {
+func WeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
 	sum := 0
 	for _, c := range choices {
 		sum += c.Weight
@@ -107,7 +107,7 @@ func WeightedChoiceT[T any](choices []ChoiceT[T]) (ChoiceT[T], error) {
 	for _, c := range choices {
 		r -= c.Weight
 		if r < 0 {
-			return c, nil
+			return c
 		}
 	}
 	panic("should not ever reach this point. error in util/go/generic rand.go")
