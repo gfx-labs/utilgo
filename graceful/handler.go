@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 
@@ -46,4 +47,13 @@ func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc)
 		return errors.WithStack(err)
 	}
 	return <-errChan
+}
+
+func WgCh(s *sync.WaitGroup) chan struct{} {
+	o := make(chan struct{})
+	go func() {
+		s.Done()
+		close(o)
+	}()
+	return o
 }
