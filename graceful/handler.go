@@ -52,7 +52,7 @@ func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc)
 func WgCh(s *sync.WaitGroup) chan struct{} {
 	o := make(chan struct{})
 	go func() {
-		s.Done()
+		s.Wait()
 		close(o)
 	}()
 	return o
