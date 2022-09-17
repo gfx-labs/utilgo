@@ -98,13 +98,14 @@ func WeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
 		sum += c.Weight
 	}
 	r := IntRange(0, sum)
-	for _, c := range choices {
+	var c ChoiceT[T]
+	for _, c = range choices {
 		r -= c.Weight
-		if r < 0 {
+		if r <= 0 {
 			return c
 		}
 	}
-	panic("should not ever reach this point. error in util/go/generic rand.go")
+	return c
 }
 
 func InvertChoicesT[T any](choices []ChoiceT[T]) []ChoiceT[T] {
