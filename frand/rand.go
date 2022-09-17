@@ -107,15 +107,16 @@ func WeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
 	panic("should not ever reach this point. error in util/go/generic rand.go")
 }
 
-func InvertChoicesT[T any](choices []ChoiceT[T]) {
+func InvertChoicesT[T any](choices []ChoiceT[T]) []ChoiceT[T] {
 	sum := 0
 	for _, c := range choices {
 		sum += c.Weight
 	}
 	sum2 := 0
 	for idx, v := range choices {
-		tmp := 100 * int(float64(sum)/(float64(v.Weight)+0.0001))
+		tmp := 100 * int(float64(sum)/(float64(v.Weight)+0.001))
 		sum2 = sum2 + tmp
 		choices[idx].Weight = tmp
 	}
+	return choices
 }
