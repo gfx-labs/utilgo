@@ -85,17 +85,11 @@ func WeightedChoice(choices []Choice) Choice {
 	return WeightedChoiceT(choices)
 }
 
-func InverseWeightedChoice(choices []Choice) Choice {
-	return InverseWeightedChoiceT(choices)
-}
-
 // A Choice contains a generic item and a weight controlling the frequency with
 // which it will be selected.
 type ChoiceT[T any] struct {
 	Weight int
 	Item   T
-
-	inv int
 }
 
 func WeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
@@ -113,26 +107,15 @@ func WeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
 	panic("should not ever reach this point. error in util/go/generic rand.go")
 }
 
-func InverseWeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
+func InvertChoicesT[T any](choices []ChoiceT[T]) {
 	sum := 0
 	for _, c := range choices {
-		if c.Weight == 0 {
-			return c
-		}
 		sum += c.Weight
 	}
 	sum2 := 0
 	for idx, v := range choices {
-		tmp := 100 * int(float64(sum)/float64(v.Weight))
+		tmp := 100 * int(float64(sum)/(float64(v.Weight)+0.0001))
 		sum2 = sum2 + tmp
-		choices[idx].inv = tmp
+		choices[idx].Weight = tmp
 	}
-	r := IntRange(0, sum2)
-	for _, c := range choices {
-		r -= c.inv
-		if r < 0 {
-			return c
-		}
-	}
-	panic("should not ever reach this point. error in util/go/generic rand.go")
 }

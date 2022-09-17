@@ -111,10 +111,7 @@ func TestWeightedChoice(t *testing.T) {
 	// Run WeightedChoice() a million times, and record how often it returns each
 	// of the possible choices.
 	for i := 0; i < 1000000; i++ {
-		c, err := WeightedChoice(choices)
-		if err != nil {
-			t.Error(err)
-		}
+		c := WeightedChoice(choices)
 		chosenCount[c] += 1
 	}
 	// Test that higher weighted choices were chosen more often than their lower
@@ -142,13 +139,11 @@ func TestInverseWeightedChoice(t *testing.T) {
 			choices = append(choices, c)
 			chosenCount[c.Weight] = 0
 		}
+		InvertChoicesT(choices)
 		// Run WeightedChoice() a million times, and record how often it returns each
 		// of the possible choices.
 		for i := 0; i < 1000000; i++ {
-			c, err := InverseWeightedChoice(choices)
-			if err != nil {
-				t.Error(err)
-			}
+			c := WeightedChoice(choices)
 			chosenCount[c.Weight] += 1
 		}
 		// Test that lower weighted choices were chosen more often than their higher
@@ -202,37 +197,7 @@ func BenchmarkWeightedChoice(b *testing.B) {
 	// Run the benchmark
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		_, err := WeightedChoice(choices)
-		if err != nil {
-			b.Error(err)
-		}
-	}
-}
-
-// BenchmarkIntRange runs a benchmark on the InverseWeightedChoice function.
-func BenchmarkInverseWeightedChoice(b *testing.B) {
-	// Create some random choices and weights before we start
-	b.StopTimer()
-	choices := []Choice{}
-	for i := 0; i < 100; i++ {
-		s, err := AlphaString(64)
-		if err != nil {
-			b.Error(err)
-		}
-		w := IntRange(1, 10)
-		c := Choice{
-			Item:   s,
-			Weight: w,
-		}
-		choices = append(choices, c)
-	}
-	// Run the benchmark
-	b.StartTimer()
-	for i := 0; i < b.N; i++ {
-		_, err := InverseWeightedChoice(choices)
-		if err != nil {
-			b.Error(err)
-		}
+		WeightedChoice(choices)
 	}
 }
 
