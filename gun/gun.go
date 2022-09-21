@@ -3,6 +3,7 @@ package gun
 import (
 	"encoding/hex"
 	"fmt"
+	"log"
 	"os"
 	"path"
 	"reflect"
@@ -66,15 +67,17 @@ func LoadEnvVars(i any) error {
 	rv = rv.Elem()
 	rt := rv.Type()
 	for i := 0; i < rt.NumField(); i++ {
+
 		envVar, ok := rt.Field(i).Tag.Lookup("yaml")
 		if ok {
 			envVar = strings.Split(envVar, ",")[0]
 		} else {
-			envVar, ok := rt.Field(i).Tag.Lookup("gun")
+			envVar, ok = rt.Field(i).Tag.Lookup("gun")
 			if ok {
 				envVar = strings.Split(envVar, ",")[0]
 			} else {
 				envVar = strings.ToUpper(rt.Field(i).Name)
+				log.Println(rt.Field(i).Name, envVar)
 			}
 		}
 		evs := os.Getenv(strings.ToUpper(envVar))
@@ -86,6 +89,14 @@ func LoadEnvVars(i any) error {
 				rv.Field(i).SetUint(uint64(mustEnvInt(envVar)))
 			case string:
 				rv.Field(i).SetString(evs)
+			case []string:
+				rv.Field(i).Set(reflect.ValueOf(strings.Split(evs, ",")))
+			case []int:
+				a := make([]int, 0)
+				for _, v := range strings.Split(evs, ",") {
+					a = append(a, mustInt(v))
+				}
+				rv.Field(i).Set(reflect.ValueOf(a))
 			case []byte:
 				bts, err := hex.DecodeString(evs)
 				if err == nil {
@@ -99,7 +110,13 @@ func LoadEnvVars(i any) error {
 
 	return nil
 }
-
+func mustInt(s string) int {
+	i, err := strconv.Atoi(s)
+	if err != nil {
+		panic(err)
+	}
+	return i
+}
 func mustEnvInt(s string) int {
 	i, err := strconv.Atoi(os.Getenv(s))
 	if err != nil {
