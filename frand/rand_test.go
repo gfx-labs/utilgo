@@ -127,19 +127,19 @@ func TestWeightedChoice(t *testing.T) {
 // over the course of 1,000,000 calls to WeightedChoice() each choice is
 // returned more often than choices with a lower weight.
 func TestInverseWeightedChoice(t *testing.T) {
-	for z := 0; z < 4; z++ {
-		// Make weighted choices
-		var choices []Choice
-		chosenCount := make(map[int]int)
-		for i := 1; i < 10; i++ {
-			c := Choice{
-				Weight: i,
-				Item:   i,
-			}
-			choices = append(choices, c)
-			chosenCount[c.Weight] = 0
+	// Make weighted choices
+	var choices []Choice
+	chosenCount := make(map[int]int)
+	for i := 1; i < 10; i++ {
+		c := Choice{
+			Weight: i,
+			Item:   i,
 		}
-		InvertChoicesT(choices)
+		choices = append(choices, c)
+		chosenCount[c.Weight] = 0
+	}
+	InvertChoicesT(choices)
+	for z := 0; z < 4; z++ {
 		// Run WeightedChoice() a million times, and record how often it returns each
 		// of the possible choices.
 		for i := 0; i < 1000000; i++ {

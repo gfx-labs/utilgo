@@ -101,11 +101,11 @@ func WeightedChoiceT[T any](choices []ChoiceT[T]) ChoiceT[T] {
 	var c ChoiceT[T]
 	for _, c = range choices {
 		r -= c.Weight
-		if r <= 0 {
+		if r < 0 {
 			return c
 		}
 	}
-	return c
+	panic("should not reach here. please report bug in gfx.cafe/util/go")
 }
 
 func InvertChoicesT[T any](choices []ChoiceT[T]) []ChoiceT[T] {
