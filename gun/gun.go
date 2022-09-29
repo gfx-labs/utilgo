@@ -3,7 +3,6 @@ package gun
 import (
 	"encoding/hex"
 	"fmt"
-	"log"
 	"os"
 	"path"
 	"reflect"
@@ -77,7 +76,6 @@ func LoadEnvVars(i any) error {
 				envVar = strings.Split(envVar, ",")[0]
 			} else {
 				envVar = strings.ToUpper(rt.Field(i).Name)
-				log.Println(rt.Field(i).Name, envVar)
 			}
 		}
 		evs := os.Getenv(strings.ToUpper(envVar))
