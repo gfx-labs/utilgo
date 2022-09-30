@@ -9,5 +9,6 @@ use (
 	./gun
 	./ifx
 	./lambda
+	./lru
 	./rdx
 )
