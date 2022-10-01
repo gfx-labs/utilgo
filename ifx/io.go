@@ -10,8 +10,8 @@ type Decoder interface {
 	Decode(any) error
 }
 
-type StreamWriter func(io.Writer) Encoder
-type StreamReader func(io.Reader) Decoder
+type StreamEncoder func(io.Writer) Encoder
+type StreamDecoder func(io.Reader) Decoder
 
 type Compressor func(w io.Writer) (io.WriteCloser, error)
 type MustCompressor func(w io.Writer) io.WriteCloser
