@@ -13,10 +13,10 @@ type HookPool[T any] struct {
 
 // Put adds x to the pool.
 func (p *HookPool[T]) Put(x T) {
-	p.FnPut(x)
 	if p.FnPut != nil {
-		p.p.Put(x)
+		p.FnPut(x)
 	}
+	p.p.Put(x)
 }
 func (p *HookPool[T]) Get() T {
 	p.o.Do(func() {
