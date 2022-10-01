@@ -8,6 +8,7 @@ type HookPool[T any] struct {
 	FnPut func(T)
 	FnGet func(T)
 	p     sync.Pool
+	o     sync.Once
 }
 
 // Put adds x to the pool.
@@ -18,6 +19,11 @@ func (p *HookPool[T]) Put(x T) {
 	}
 }
 func (p *HookPool[T]) Get() T {
+	p.o.Do(func() {
+		p.p.New = func() any {
+			return p.New()
+		}
+	})
 	x := p.p.Get().(T)
 	if p.FnGet != nil {
 		p.FnGet(x)
