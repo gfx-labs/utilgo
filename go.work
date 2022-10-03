@@ -3,6 +3,7 @@ go 1.19
 use (
 	.
 	./bufpool
+	./bytepool
 	./frand
 	./generic
 	./graceful
