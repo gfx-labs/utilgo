@@ -1,6 +1,8 @@
 package lru
 
-// LRUCache is the interface for simple LRU cache.
+import "time"
+
+// Fixed is the interface for simple LRU cache.
 type Fixed[K comparable, V any] interface {
 	// Adds a value to the cache, returns true if an eviction occurred and
 	// updates the "recently used"-ness of the key.
@@ -36,4 +38,9 @@ type Fixed[K comparable, V any] interface {
 
 	// Resizes cache, returning number evicted
 	Resize(int) int
+}
+
+// Fixed TTL is Fixed interface but with AddWithTTL function
+type FixedTTL[K comparable, V any] interface {
+	AddWithTTL(key K, value V, ttl time.Duration) bool
 }
