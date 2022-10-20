@@ -42,5 +42,6 @@ type Fixed[K comparable, V any] interface {
 
 // Fixed TTL is Fixed interface but with AddWithTTL function
 type FixedTTL[K comparable, V any] interface {
+	Fixed[K, V]
 	AddWithTTL(key K, value V, ttl time.Duration) bool
 }
