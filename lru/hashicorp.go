@@ -1,12 +1,19 @@
 package lru
 
 import (
-	"git.tuxpa.in/a/lambda"
+	"gfx.cafe/util/go/lambda"
 	hashicorp "github.com/hashicorp/golang-lru"
 )
 
 type HashiCorp[K comparable, V any] struct {
-	c hashicorp.Cache
+	c *hashicorp.Cache
+}
+
+func NewHashiCorp[K comparable, V any](size int) Fixed[K, V] {
+	c, _ := hashicorp.New(size)
+	return &HashiCorp[K, V]{
+		c: c,
+	}
 }
 
 // Adds a value to the cache, returns true if an eviction occurred and
