@@ -11,6 +11,7 @@ use (
 	./ifx
 	./lambda
 	./lru
+	./mob
 	./rangerunner
 	./rdx
 	./retry
