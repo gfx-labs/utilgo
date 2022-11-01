@@ -1,6 +1,8 @@
 package generic
 
-import "sync"
+import (
+	"sync"
+)
 
 // Map is like a Go map[K]V but is safe for concurrent use by multiple goroutines without additional locking or coordination. Loads, stores, and deletes run in amortized constant time.
 //
