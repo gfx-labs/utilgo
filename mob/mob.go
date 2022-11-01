@@ -16,6 +16,10 @@ func init() {
 	m = New()
 }
 
+func Global() *Mob {
+	return m
+}
+
 // A Mob is a request / event handlers registry.
 type Mob struct {
 	interceptors []Interceptor
