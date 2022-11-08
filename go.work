@@ -12,6 +12,7 @@ use (
 	./lambda
 	./lru
 	./mob
+	./ptr
 	./rangerunner
 	./rdx
 	./retry
