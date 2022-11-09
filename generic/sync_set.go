@@ -21,15 +21,17 @@ func (s *Set[K]) Has(k K) bool {
 	return ok
 }
 
-// runs function fn if not there and adds k to set. bool returns true if it was new
-func (s *Set[K]) HasOrDo(k K, fn func(K)) bool {
+// runs function fn if not there and adds k to set. returns true if a value was set
+// if fn returns false, does not assign
+func (s *Set[K]) HasOrDo(k K, fn func(K) bool) bool {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	_, ok := s.inner.Load(k)
 	if !ok {
-		s.inner.Store(k, struct{}{})
-		fn(k)
-		return true
+		if fn(k) {
+			s.inner.Store(k, struct{}{})
+			return true
+		}
 	}
 	return false
 }
