@@ -10,6 +10,7 @@ use (
 	./gun
 	./ifx
 	./lambda
+	./lexer
 	./lru
 	./mob
 	./ptr
