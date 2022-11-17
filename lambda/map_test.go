@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"git.tuxpa.in/a/lambda"
+	"gfx.cafe/util/go/lambda"
 )
 
 func TestMapAdd(t *testing.T) {

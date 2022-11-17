@@ -56,6 +56,36 @@ func MergeN[T any](a []T, xs ...[]T) []T {
 	return a
 }
 
+// split xs into n groups
+// extra elements will be put in the last array to keep order
+// if len(xs) < n, result will be [][]T{xs}
+func Split[T any](xs []T, n int) [][]T {
+	if n == 0 {
+		return nil
+	}
+	groupSize := len(xs) / n
+	if groupSize == 0 {
+		return [][]T{xs}
+	}
+	idx := 0
+	out := make([][]T, n)
+	for i := 0; i < len(xs); i = i + groupSize {
+		from := i
+		to := i + groupSize
+		if idx == (n - 1) {
+			to = len(xs)
+		}
+		if to >= len(xs) {
+			to = len(xs)
+			out[idx] = append(out[idx], xs[from:to]...)
+			return out
+		}
+		out[idx] = append(out[idx], xs[from:to]...)
+		idx = idx + 1
+	}
+	return out
+}
+
 // copies slice xs into map in which the key is the slice in dex
 func MapSlice[T any](xs []T) map[int]T {
 	m := make(map[int]T, len(xs))
