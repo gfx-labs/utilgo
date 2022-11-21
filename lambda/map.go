@@ -2,113 +2,133 @@ package lambda
 
 import "sync"
 
-func MapNil[T any](xs []T, fx func(T)) {
-	for _, v := range xs {
-		fx(v)
-	}
-}
-
-func Map[T any](xs []T, fx func(T) T) []T {
-	for i, v := range xs {
-		xs[i] = fx(v)
-	}
-	return xs
-}
-
-func MapV[T, V any](xs []T, fx func(T) V) []V {
-	ov := make([]V, len(xs))
-	for i, v := range xs {
-		ov[i] = fx(v)
-	}
-	return ov
-}
-
-func MapError[T any](xs []T, fx func(T) (T, error)) ([]T, []error) {
-	oe := make([]error, len(xs))
-	for i, v := range xs {
-		xs[i], oe[i] = fx(v)
-	}
-	return xs, oe
-}
-
-func MapErrorV[T, V any](xs []T, fx func(T) (V, error)) ([]V, []error) {
-	ov := make([]V, len(xs))
-	oe := make([]error, len(xs))
-	for i, v := range xs {
-		ov[i], oe[i] = fx(v)
-	}
-	return ov, oe
-}
-
-func FanNil[T any](xs []T, fx func(T)) {
-	wg := sync.WaitGroup{}
-	wg.Add(len(xs))
-	for _, vv := range xs {
-		v := vv
-		go func() {
+func MapNil[T any](fx func(T)) func([]T) {
+	return func(xs []T) {
+		for _, v := range xs {
 			fx(v)
-			wg.Done()
-		}()
+		}
 	}
-	wg.Wait()
 }
 
-func Fan[T any](xs []T, fx func(T) T) []T {
-	wg := sync.WaitGroup{}
-	wg.Add(len(xs))
-	for ii, vv := range xs {
-		i, v := ii, vv
-		go func() {
+func Map[T any](fx func(T) T) func([]T) []T {
+	return func(xs []T) []T {
+		for i, v := range xs {
 			xs[i] = fx(v)
-			wg.Done()
-		}()
+		}
+		return xs
 	}
-	wg.Wait()
-	return xs
 }
 
-func FanV[T, V any](xs []T, fx func(T) V) []V {
-	wg := sync.WaitGroup{}
-	wg.Add(len(xs))
-	ov := make([]V, len(xs))
-	for ii, vv := range xs {
-		i, v := ii, vv
-		go func() {
+func MapV[T, V any](fx func(T) V) func([]T) []V {
+	return func(xs []T) []V {
+		ov := make([]V, len(xs))
+		for i, v := range xs {
 			ov[i] = fx(v)
-			wg.Done()
-		}()
+		}
+		return ov
 	}
-	wg.Wait()
-	return ov
 }
 
-func FanError[T any](xs []T, fx func(T) (T, error)) ([]T, []error) {
-	wg := sync.WaitGroup{}
-	wg.Add(len(xs))
-	oe := make([]error, len(xs))
-	for ii, vv := range xs {
-		i, v := ii, vv
-		go func() {
+func MapError[T any](fx func(T) (T, error)) func(xs []T) ([]T, []error) {
+	return func(xs []T) ([]T, []error) {
+		oe := make([]error, len(xs))
+		for i, v := range xs {
 			xs[i], oe[i] = fx(v)
-			wg.Done()
-		}()
+		}
+		return xs, oe
 	}
-	wg.Wait()
-	return xs, oe
 }
 
-func FanErrorV[T, V any](xs []T, fx func(T) (V, error)) ([]V, []error) {
-	wg := sync.WaitGroup{}
-	wg.Add(len(xs))
-	ov := make([]V, len(xs))
-	oe := make([]error, len(xs))
-	for ii, vv := range xs {
-		i, v := ii, vv
-		go func() {
+func MapErrorV[T, V any](fx func(T) (V, error)) func(xs []T) ([]V, []error) {
+	return func(xs []T) ([]V, []error) {
+		ov := make([]V, len(xs))
+		oe := make([]error, len(xs))
+		for i, v := range xs {
 			ov[i], oe[i] = fx(v)
-			wg.Done()
-		}()
+		}
+		return ov, oe
 	}
-	wg.Wait()
-	return ov, oe
+}
+
+func FanNil[T any](fx func(T)) func(xs []T) {
+	return func(xs []T) {
+		wg := sync.WaitGroup{}
+		wg.Add(len(xs))
+		for _, vv := range xs {
+			v := vv
+			go func() {
+				fx(v)
+				wg.Done()
+			}()
+		}
+		wg.Wait()
+	}
+}
+
+func Fan[T any](fx func(T) T) func(xs []T) []T {
+	return func(xs []T) []T {
+		wg := sync.WaitGroup{}
+		wg.Add(len(xs))
+		for ii, vv := range xs {
+			i, v := ii, vv
+			go func() {
+				xs[i] = fx(v)
+				wg.Done()
+			}()
+		}
+		wg.Wait()
+		return xs
+	}
+}
+
+func FanV[T, V any](fx func(T) V) func(xs []T) []V {
+	return func(xs []T) []V {
+		wg := sync.WaitGroup{}
+		wg.Add(len(xs))
+		ov := make([]V, len(xs))
+		for ii, vv := range xs {
+			i, v := ii, vv
+			go func() {
+				ov[i] = fx(v)
+				wg.Done()
+			}()
+		}
+		wg.Wait()
+		return ov
+	}
+}
+
+func FanError[T any](fx func(T) (T, error)) func(xs []T) ([]T, []error) {
+	return func(xs []T) ([]T, []error) {
+		wg := sync.WaitGroup{}
+		wg.Add(len(xs))
+		oe := make([]error, len(xs))
+		for ii, vv := range xs {
+			i, v := ii, vv
+			go func() {
+				xs[i], oe[i] = fx(v)
+				wg.Done()
+			}()
+		}
+		wg.Wait()
+		return xs, oe
+	}
+}
+
+func FanErrorV[T, V any](fx func(T) (V, error)) func(xs []T) ([]V, []error) {
+	return func(xs []T) ([]V, []error) {
+		wg := sync.WaitGroup{}
+		wg.Add(len(xs))
+		ov := make([]V, len(xs))
+		oe := make([]error, len(xs))
+		for ii, vv := range xs {
+			i, v := ii, vv
+			go func() {
+				ov[i], oe[i] = fx(v)
+				wg.Done()
+			}()
+		}
+		wg.Wait()
+		return ov, oe
+	}
 }
