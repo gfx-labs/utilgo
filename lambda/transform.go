@@ -42,7 +42,7 @@ func MergeMap[K comparable, V any](m1 map[K]V, m2 map[K]V) (m map[K]V) {
 
 // transforms [][]T to []T. it's really just Foldl1(xss, Merge)
 func Flatten[T any](xss [][]T) []T {
-	return Foldl1(xss, Merge[T])
+	return Foldl1(Merge[T])(xss)
 }
 
 // concats slice a and b and returns such

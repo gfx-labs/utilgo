@@ -2,6 +2,34 @@ package lambda
 
 import "sync"
 
+type ErrorSlice []error
+
+func (e ErrorSlice) First() error {
+	for _, v := range e {
+		if v != nil {
+			return v
+		}
+	}
+	return nil
+}
+func (e ErrorSlice) IfError() ErrorSlice {
+	for _, v := range e {
+		if v != nil {
+			return e
+		}
+	}
+	return nil
+}
+
+func (e ErrorSlice) Error() string {
+	for _, v := range e {
+		if v != nil {
+			return v.Error()
+		}
+	}
+	return "Error() call on Errorslice With No Errors"
+}
+
 func MapNil[T any](fx func(T)) func([]T) {
 	return func(xs []T) {
 		for _, v := range xs {
@@ -29,24 +57,24 @@ func MapV[T, V any](fx func(T) V) func([]T) []V {
 	}
 }
 
-func MapError[T any](fx func(T) (T, error)) func(xs []T) ([]T, []error) {
-	return func(xs []T) ([]T, []error) {
-		oe := make([]error, len(xs))
+func MapError[T any](fx func(T) (T, error)) func(xs []T) ([]T, error) {
+	return func(xs []T) ([]T, error) {
+		oe := make(ErrorSlice, len(xs))
 		for i, v := range xs {
 			xs[i], oe[i] = fx(v)
 		}
-		return xs, oe
+		return xs, oe.IfError()
 	}
 }
 
-func MapErrorV[T, V any](fx func(T) (V, error)) func(xs []T) ([]V, []error) {
-	return func(xs []T) ([]V, []error) {
+func MapErrorV[T, V any](fx func(T) (V, error)) func(xs []T) ([]V, error) {
+	return func(xs []T) ([]V, error) {
 		ov := make([]V, len(xs))
-		oe := make([]error, len(xs))
+		oe := make(ErrorSlice, len(xs))
 		for i, v := range xs {
 			ov[i], oe[i] = fx(v)
 		}
-		return ov, oe
+		return ov, oe.IfError()
 	}
 }
 
@@ -98,11 +126,11 @@ func FanV[T, V any](fx func(T) V) func(xs []T) []V {
 	}
 }
 
-func FanError[T any](fx func(T) (T, error)) func(xs []T) ([]T, []error) {
-	return func(xs []T) ([]T, []error) {
+func FanError[T any](fx func(T) (T, error)) func(xs []T) ([]T, error) {
+	return func(xs []T) ([]T, error) {
 		wg := sync.WaitGroup{}
 		wg.Add(len(xs))
-		oe := make([]error, len(xs))
+		oe := make(ErrorSlice, len(xs))
 		for ii, vv := range xs {
 			i, v := ii, vv
 			go func() {
@@ -111,16 +139,16 @@ func FanError[T any](fx func(T) (T, error)) func(xs []T) ([]T, []error) {
 			}()
 		}
 		wg.Wait()
-		return xs, oe
+		return xs, oe.IfError()
 	}
 }
 
-func FanErrorV[T, V any](fx func(T) (V, error)) func(xs []T) ([]V, []error) {
-	return func(xs []T) ([]V, []error) {
+func FanErrorV[T, V any](fx func(T) (V, error)) func(xs []T) ([]V, error) {
+	return func(xs []T) ([]V, error) {
 		wg := sync.WaitGroup{}
 		wg.Add(len(xs))
 		ov := make([]V, len(xs))
-		oe := make([]error, len(xs))
+		oe := make(ErrorSlice, len(xs))
 		for ii, vv := range xs {
 			i, v := ii, vv
 			go func() {
@@ -129,6 +157,6 @@ func FanErrorV[T, V any](fx func(T) (V, error)) func(xs []T) ([]V, []error) {
 			}()
 		}
 		wg.Wait()
-		return ov, oe
+		return ov, oe.IfError()
 	}
 }

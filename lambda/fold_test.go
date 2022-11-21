@@ -23,7 +23,7 @@ func TestFoldlInt(t *testing.T) {
 	}
 
 	for _, v := range cases {
-		ans := Foldl(0, v.arr, v.fn)
+		ans := Foldl(v.fn)(0, v.arr)
 		if !reflect.DeepEqual(ans, v.expect) {
 			t.Errorf("failed test %s, expected %v not %v", v.name, ans, v.expect)
 		}
@@ -40,7 +40,7 @@ func TestFoldlFloat64(t *testing.T) {
 		},
 	}
 	for _, v := range cases {
-		ans := Foldl1(v.arr, v.fn)
+		ans := Foldl1(v.fn)(v.arr)
 		if !reflect.DeepEqual(ans, v.expect) {
 			t.Errorf("failed test %s, expected %v not %v", v.name, v.expect, ans)
 		}
@@ -57,7 +57,7 @@ func TestFoldr1Float64(t *testing.T) {
 		},
 	}
 	for _, v := range cases {
-		ans := Foldr1(v.arr, v.fn)
+		ans := Foldr1(v.fn)(v.arr)
 		if !reflect.DeepEqual(ans, v.expect) {
 			t.Errorf("failed test %s, expected %v not %v", v.name, v.expect, ans)
 		}
