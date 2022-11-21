@@ -4,29 +4,32 @@ import "sync"
 
 type ErrorSlice []error
 
-func (e ErrorSlice) First() error {
-	for _, v := range e {
+func (e *ErrorSlice) First() error {
+	if e == nil {
+		return nil
+	}
+	for _, v := range *e {
 		if v != nil {
 			return v
 		}
 	}
 	return nil
 }
-func (e ErrorSlice) IfError() ErrorSlice {
+func (e *ErrorSlice) IfError() *ErrorSlice {
 	n := ErrorSlice{}
-	for _, v := range e {
+	for _, v := range *e {
 		if v != nil {
 			n = append(n, e)
 		}
 	}
 	if len(n) > 0 {
-		return n
+		return &n
 	}
 	return nil
 }
 
-func (e ErrorSlice) Error() string {
-	for _, v := range e {
+func (e *ErrorSlice) Error() string {
+	for _, v := range *e {
 		if v != nil {
 			return v.Error()
 		}
