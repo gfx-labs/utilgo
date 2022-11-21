@@ -1,6 +1,8 @@
 package lambda
 
-import "sync"
+import (
+	"sync"
+)
 
 type ErrorSlice []error
 
@@ -15,7 +17,7 @@ func (e *ErrorSlice) First() error {
 	}
 	return nil
 }
-func (e *ErrorSlice) IfError() *ErrorSlice {
+func (e *ErrorSlice) IfError() error {
 	n := ErrorSlice{}
 	for _, v := range *e {
 		if v != nil {
@@ -70,7 +72,8 @@ func MapError[T any](fx func(T) (T, error)) func(xs []T) ([]T, error) {
 		for i, v := range xs {
 			xs[i], oe[i] = fx(v)
 		}
-		return xs, oe.IfError()
+		err := oe.IfError()
+		return xs, err
 	}
 }
 
