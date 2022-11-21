@@ -13,10 +13,14 @@ func (e ErrorSlice) First() error {
 	return nil
 }
 func (e ErrorSlice) IfError() ErrorSlice {
+	n := ErrorSlice{}
 	for _, v := range e {
 		if v != nil {
-			return e
+			n = append(n, e)
 		}
+	}
+	if len(n) > 0 {
+		return n
 	}
 	return nil
 }
