@@ -1,5 +1,7 @@
 package lambda
 
+import "math"
+
 // returns []K and []V in separate response args.
 func Entries[K comparable, V any](m map[K]V) ([]K, []V) {
 	keys := make([]K, 0, len(m))
@@ -57,8 +59,9 @@ func MergeN[T any](a []T, xs ...[]T) []T {
 }
 
 // split xs into n groups
-// extra elements will be put in the last array to keep order
-// if len(xs) < n, result will be [][]T{xs}
+// extra elements will be put in the last array, to ensure that only N groups will ever exist
+// that is, if len(xs) == 10 && n == 3, then the outputs will have lengths of [3, 3, 4], respectively
+// if len(xs) <= n, result will be [][]T{xs}
 func Split[T any](xs []T, n int) [][]T {
 	if n == 0 {
 		return nil
@@ -81,6 +84,28 @@ func Split[T any](xs []T, n int) [][]T {
 			return out
 		}
 		out[idx] = append(out[idx], xs[from:to]...)
+		idx = idx + 1
+	}
+	return out
+}
+
+// segment xs into groups of n, each group being no larger than n
+// that is, if len(xs) == 10 && n == 3, then the outputs will have lengths of [3, 3, 3, 1], respectively
+func Segment[T any](xs []T, n int) [][]T {
+	if n == 0 {
+		return nil
+	}
+	idx := 0
+	out := make([][]T, int(math.Ceil(float64(len(xs))/float64(n))))
+	for i := 0; i < len(xs); i = i + n {
+		from := i
+		to := i + n
+		if to > len(xs) {
+			to = len(xs)
+			out[idx] = xs[from:to]
+			return out
+		}
+		out[idx] = xs[from:to]
 		idx = idx + 1
 	}
 	return out
