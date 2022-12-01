@@ -178,6 +178,9 @@ func (l *Lex) take(chars string, while bool) {
 	for strings.ContainsRune(chars, r) == while && r != EOFRune {
 		r = l.next(true)
 	}
+	if r == EOFRune {
+		return
+	}
 	l.Rewind() // last next wasn't a match
 }
 
