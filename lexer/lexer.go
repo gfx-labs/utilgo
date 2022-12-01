@@ -175,7 +175,7 @@ func (l *Lex) run(startState StateFn) {
 // reads tokens until a token not in the given string is encountered.
 func (l *Lex) take(chars string, while bool) {
 	r := l.next(true)
-	for strings.ContainsRune(chars, r) == while {
+	for strings.ContainsRune(chars, r) == while && r != EOFRune {
 		r = l.next(true)
 	}
 	l.Rewind() // last next wasn't a match
