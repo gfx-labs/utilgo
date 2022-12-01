@@ -76,6 +76,22 @@ func (l *Lex) ConsumeWith(fn func(tok *Token)) {
 	}
 }
 
+// calls the function for every token until done or error
+// this is just a helper for NextToken
+func (l *Lex) ConsumeWithUntilErr(fn func(tok *Token) error) error {
+	for {
+		tok, done := l.NextToken()
+		if done {
+			break
+		}
+		err := fn(tok)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // returns a token, and whether or not is done
 func (l *Lex) NextToken() (tok *Token, done bool) {
 	if tok, done := <-l.tokens; done {
