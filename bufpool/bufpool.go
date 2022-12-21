@@ -26,10 +26,13 @@ var allocator = sync.Pool{
 //
 // If no suitable buffer exists in the pool, Get creates one.
 func (p *BufferPool) GetStd() *bytes.Buffer {
-	return allocator.Get().(*bytes.Buffer)
+	b := allocator.Get().(*bytes.Buffer)
+	b.Reset()
+	return b
 }
 
 func (p *BufferPool) PutStd(b *bytes.Buffer) {
+	b.Reset()
 	allocator.Put(b)
 }
 func (p *BufferPool) Get(length int) *bytes.Buffer {
