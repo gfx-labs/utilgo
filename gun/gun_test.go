@@ -9,7 +9,7 @@ import (
 )
 
 var exampleConfigOne struct {
-	Field1     string `yaml:"field_one"`
+	Field1     string `yaml:"field_one" env:"FIELD_ONE" json:"f_1" default:"IM DEFAULT HI"`
 	Field2     int32
 	MANY_FIELD []string
 }

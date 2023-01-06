@@ -15,52 +15,59 @@ simply create a struct that is json encodable into what you need
 
 struct keys must be alphanumeric + _
 
-json is a subset of yaml, so your config file can be in JSON or YAML, however use yaml as your tags
+your config file can be .yml .yaml .json or .env (.env is only read if it is in the current directory)
 
-config files key by default is all lowercase of the field (this is different from JSON!)
-
-env vars WILL ALWAYS override, and ALWAYS ALL UPPERCASE
+env vars WILL ALWAYS override
 
 does NOT work with nested variables.
-
-env vars ONLY works with integer types, float types, and string. all other types will PANIC!!!
-
 
 ```
 package main
 
-
-var Config struct {
-  Field string `yaml:"some_field"`
-  Crack int
-  Arango_USER dog
+var exampleConfigOne struct {
+	Field1     string `yaml:"field_one" env:"FIELD_ONE" json:"f_1" default:"IM DEFAULT HI"`
+	Field2     int32
+	MANY_FIELD []string
 }
 
 // the env vars for this struct are
-// SOME_FIELD, CRACK, ARANGO_USER
-// the yaml/json for this struct are
-// field, crack, arango_user
-
+// FIELD_ONE, Field2, MANY_FIELD
+// the yaml for this struct are
+// field_one, Field2, MANY_FIELD
+// the json for this struct are
+// f_1, Field2, MANY_FIELD
 
 func init() {
   gun.Load(&Config)
 }
 
 func main() {
-  _ = Config.Field
+  _ = Config.Field1
 }
 ```
 
+You can also call
+
+```gun.LoadPrefix(&Config, "prefix")```
+
+to load ENV variables prefixed with "prefix"
+and all prefix.yml prefix.yaml prefix.json files in the same locations listed below
+this will not apply to values inside of .env files
+
 It will look for the config file in the following places.
+Gun loads the config in the order listed, the lower items will override the higher.
+For example a value set in ~/.gfx/config.yml will override the same value set in /config.yml
 
-1. env var $GUN_CONFIG_FILE
-2. /config/config.yml
-3. /config.yml
+1. /config.yml
+2. /config.yaml
+3. /config.json
+4. /config/config.yml
 5. /config/config.yaml
-6. /config.yaml
-5. /config/config.json
-6. /config.json
-
+6. /config/config.json
+7. ~/.gfx/config.yml
+8. ~/.gfx/config.yaml
+9. ~/.gfx/config.json
+10. .env
 
 ## important
 
