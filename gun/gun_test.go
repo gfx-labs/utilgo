@@ -16,7 +16,16 @@ var exampleConfigOne struct {
 
 func TestConfigOne(t *testing.T) {
 	os.Setenv("MANY_FIELD", "one,two,three")
-	gun.LoadFile("./config.yml", &exampleConfigOne)
-	gun.LoadEnvVars(&exampleConfigOne)
+	gun.Load(&exampleConfigOne)
 	fmt.Printf("t: %+v\n", exampleConfigOne)
+}
+
+func TestPrefixOne(t *testing.T) {
+	os.Setenv("MANY_FIELD", "one,two,three")
+	os.Setenv("TEST_MANY_FIELD", "four,five,six")
+	os.Setenv("TEST2_MANY_FIELD", "seven,eight,nine")
+	gun.LoadPrefix(&exampleConfigOne, "TEST")
+	fmt.Printf("prefix_test: %+v\n", exampleConfigOne)
+	gun.LoadPrefix(&exampleConfigOne, "TEST2")
+	fmt.Printf("prefix_test2: %+v\n", exampleConfigOne)
 }
