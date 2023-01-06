@@ -50,6 +50,12 @@ You can also call
 
 ```gun.LoadPrefix(&Config, "prefix")```
 
+Unless a field is tagged otherwise gun will look for exactly the name of that field
+to look for a different name use yaml:"" env:"" or json:"" tags
+
+to set a default value for that config item use the default:"" tag,
+this is overridden by any file or ENV present
+
 to load ENV variables prefixed with "prefix"
 and all prefix.yml prefix.yaml prefix.json files in the same locations listed below
 this will not apply to values inside of .env files
