@@ -47,6 +47,7 @@ func LoadPrefix(i any, prefix string) {
 		FileDecoders: map[string]aconfig.FileDecoder{
 			".yaml": yamlDecoder,
 			".yml":  yamlDecoder,
+			".json": yamlDecoder,
 			".env":  dotenvDecoder,
 		},
 	})
