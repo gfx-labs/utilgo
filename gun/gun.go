@@ -5,9 +5,9 @@ import (
 	"os"
 	"path"
 
+	"gfx.cafe/util/go/gun/gunyaml"
 	"github.com/cristalhq/aconfig"
 	"github.com/cristalhq/aconfig/aconfigdotenv"
-	"github.com/cristalhq/aconfig/aconfigyaml"
 )
 
 func Load(i any) {
@@ -15,7 +15,7 @@ func Load(i any) {
 }
 
 func LoadPrefix(i any, prefix string) {
-	yamlDecoder := aconfigyaml.New()
+	yamlDecoder := gunyaml.New()
 	dotenvDecoder := aconfigdotenv.New()
 	fileName := "config"
 	if prefix != "" {
