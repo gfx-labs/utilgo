@@ -4,6 +4,7 @@ use (
 	.
 	./bufpool
 	./bytepool
+	./fan
 	./frand
 	./generic
 	./graceful

@@ -65,6 +65,13 @@ func AlphaString(n int) (string, error) {
 	return String(n, Alphanumeric)
 }
 
+// ChoiceAny returns a random selection from an array of T.
+func ChoiceAny[T any](choices []T) T {
+	length := len(choices)
+	i := IntRange(0, length)
+	return choices[i]
+}
+
 // ChoiceString returns a random selection from an array of strings.
 func ChoiceString(choices []string) string {
 	length := len(choices)
