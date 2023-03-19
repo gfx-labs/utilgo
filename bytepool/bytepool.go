@@ -121,3 +121,11 @@ func (p *BufferPool) PutStd(buf []byte) {
 	bp.buf = buf[:0]
 	allocator.Put(bp)
 }
+
+func GetStd() []byte {
+	return GlobalPool.GetStd()
+}
+
+func PutStd(buf []byte) {
+	GlobalPool.PutStd(buf)
+}
