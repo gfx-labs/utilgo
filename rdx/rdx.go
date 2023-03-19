@@ -7,7 +7,7 @@ import (
 	"gfx.cafe/open/gokv/encoding"
 	"gfx.cafe/open/gokv/util"
 	"github.com/alicebob/miniredis/v2"
-	"github.com/go-redis/redis/v9"
+	"github.com/redis/go-redis/v9"
 )
 
 const kv_name = "gokv"
