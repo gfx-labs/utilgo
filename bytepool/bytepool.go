@@ -95,3 +95,29 @@ func prevLogBase2(num uint32) uint32 {
 	}
 	return next - 1
 }
+
+var allocator = sync.Pool{
+	New: func() any { return new(bufp) },
+}
+
+// Get retrieves a buffer of the appropriate length from the buffer pool or
+// allocates a new one. Get may choose to ignore the pool and treat it as empty.
+// Callers should not assume any relation between values passed to Put and the
+// values returned by Get.
+//
+// If no suitable buffer exists in the pool, Get creates one.
+func (p *BufferPool) GetStd() []byte {
+	b := allocator.Get().(*bufp)
+	return b.buf[:0]
+}
+
+func (p *BufferPool) PutStd(buf []byte) {
+	var bp *bufp
+	if ptr := p.ptrs.Get(); ptr != nil {
+		bp = ptr.(*bufp)
+	} else {
+		bp = new(bufp)
+	}
+	bp.buf = buf[:0]
+	allocator.Put(bp)
+}
