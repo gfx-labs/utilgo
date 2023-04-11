@@ -28,6 +28,16 @@ func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc)
 		stopChan = make(chan os.Signal)
 		errChan  = make(chan error)
 	)
+	if start == nil {
+		start = func(ctx context.Context, done <-chan struct{}) error {
+			return nil
+		}
+	}
+	if shutdown == nil {
+		shutdown = func(ctx context.Context) error {
+			return nil
+		}
+	}
 	ctx, cancel := context.WithCancel(context.Background())
 	// Setup the graceful shutdown handler (traps SIGINT and SIGTERM)
 	go func() {
