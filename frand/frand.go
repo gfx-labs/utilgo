@@ -42,15 +42,16 @@ type RNG struct {
 // xored with random data, not directly overwritten; this means that the new
 // contents of b depend on its previous contents.
 func (r *RNG) Read(b []byte) (int, error) {
-	if len(b) <= len(r.buf[r.n:]) {
+	switch {
+	case len(b) <= len(r.buf[r.n:]):
 		// can fill b entirely from buffer
 		r.n += copyAndErase(b, r.buf[r.n:])
-	} else if len(b) <= len(r.buf[r.n:])+len(r.buf[chacha.KeySize:]) {
+	case len(b) <= len(r.buf[r.n:])+len(r.buf[chacha.KeySize:]):
 		// b is larger than current buffer, but can be filled after a reseed
 		n := copy(b, r.buf[r.n:])
 		chacha.XORKeyStream(r.buf, r.buf, make([]byte, chacha.NonceSize), r.buf[:chacha.KeySize], r.rounds)
 		r.n = chacha.KeySize + copyAndErase(b[n:], r.buf[chacha.KeySize:])
-	} else {
+	default:
 		// filling b would require multiple reseeds; instead, generate a
 		// temporary key, then write directly into b using that key
 		tmpKey := make([]byte, chacha.KeySize)
@@ -152,11 +153,12 @@ func (r *RNG) Shuffle(n int, swap func(i, j int)) {
 // using the specified buffer size and number of ChaCha rounds. It panics if
 // len(seed) != 32, bufsize < 32, or rounds != 8, 12 or 20.
 func NewCustom(seed []byte, bufsize int, rounds int) *RNG {
-	if len(seed) != chacha.KeySize {
+	switch {
+	case len(seed) != chacha.KeySize:
 		panic("frand: invalid seed size")
-	} else if bufsize < chacha.KeySize {
+	case bufsize < chacha.KeySize:
 		panic("frand: bufsize must be at least 32")
-	} else if !(rounds == 8 || rounds == 12 || rounds == 20) {
+	case !(rounds == 8 || rounds == 12 || rounds == 20):
 		panic("frand: rounds must be 8, 12, or 20")
 	}
 	buf := make([]byte, chacha.KeySize+bufsize)

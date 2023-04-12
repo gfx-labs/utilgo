@@ -36,7 +36,7 @@ func TestFoldlFloat64(t *testing.T) {
 			name:   "div",
 			arr:    []float64{1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 7.0},
 			fn:     func(a, b float64) float64 { return a / b },
-			expect: (((((float64(float64(1.0)/2.0) / 3.0) / 4.0) / 5.0) / 6.0) / 7.0),
+			expect: ((((((float64(1.0) / 2.0) / 3.0) / 4.0) / 5.0) / 6.0) / 7.0),
 		},
 	}
 	for _, v := range cases {

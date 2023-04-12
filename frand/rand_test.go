@@ -23,6 +23,7 @@ var (
 
 // Test that AlphaStringRange produces a string within specified min/max length
 // parameters.  The actual randonimity of the string is not tested.
+// nolint:gosec // insecure rand is fine here
 func TestAlphaStringRange(t *testing.T) {
 	min := rand.Intn(100)
 	max := min + 1 + rand.Intn(100)
@@ -30,13 +31,12 @@ func TestAlphaStringRange(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	switch true {
+	switch {
 	case len(s) < min:
 		t.Error("Random string is too short")
 	case len(s) > max:
 		t.Error("Random string is too short")
 	}
-	return
 }
 
 // Test that IntRange produces an integer between min and max

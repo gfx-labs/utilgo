@@ -9,6 +9,7 @@ import (
 	"math/big"
 	mrand "math/rand"
 	"reflect"
+	"runtime"
 	"sync"
 	"testing"
 	"time"
@@ -130,7 +131,7 @@ func TestRead(t *testing.T) {
 // Note that while this test is capable of catching failures, it's not
 // guaranteed to.
 func TestReadConcurrent(t *testing.T) {
-	threads := 32
+	threads := runtime.NumCPU()/2 + 1
 
 	// Spin up threads which will all be collecting entropy from 'Read' in
 	// parallel.
@@ -141,6 +142,7 @@ func TestReadConcurrent(t *testing.T) {
 	for i := 0; i < threads; i++ {
 		entropys[i] = make(map[string]struct{})
 		go func(i int) {
+			buf := make([]byte, 32)
 			for {
 				select {
 				case <-closeChan:
@@ -148,9 +150,7 @@ func TestReadConcurrent(t *testing.T) {
 					return
 				default:
 				}
-
 				// Read 32 bytes.
-				buf := make([]byte, 32)
 				Read(buf)
 				bufStr := string(buf)
 				_, exists := entropys[i][bufStr]
@@ -161,12 +161,10 @@ func TestReadConcurrent(t *testing.T) {
 			}
 		}(i)
 	}
-
 	// Let the threads spin for a bit, then shut them down.
-	time.Sleep(time.Millisecond * 1250)
+	time.Sleep(time.Millisecond * 512)
 	close(closeChan)
 	wg.Wait()
-
 	// Compare the entropy collected and verify that no set of 32 bytes was
 	// output twice.
 	allEntropy := make(map[string]struct{})
@@ -280,6 +278,7 @@ func TestShuffle(t *testing.T) {
 
 // TestSourceSeed tests that a Source can be deterministically re-seeded.
 func TestSourceSeed(t *testing.T) {
+	//nolint:gosec
 	rng := mrand.New(NewSource())
 	rng.Seed(123)
 	one := make([]int, 100)
@@ -631,6 +630,7 @@ func BenchmarkReadCrypto64Threads512kb(b *testing.B) {
 
 // BenchmarkReadMath benchmarks the speed of (math/rand).Read for small
 // slices. This establishes an upper limit for BenchmarkRead32.
+// nolint:gosec // insecure rand is fine here
 func BenchmarkReadMath32(b *testing.B) {
 	b.SetBytes(32)
 	buf := make([]byte, 32)
@@ -641,6 +641,7 @@ func BenchmarkReadMath32(b *testing.B) {
 
 // BenchmarkReadMath512kb benchmarks the speed of (math/rand).Read for larger
 // slices. This establishes an upper limit for BenchmarkRead512kb.
+// nolint:gosec // insecure rand is fine here
 func BenchmarkReadMath512kb(b *testing.B) {
 	b.SetBytes(512e3)
 	buf := make([]byte, 512e3)
@@ -651,6 +652,7 @@ func BenchmarkReadMath512kb(b *testing.B) {
 
 // BenchmarkReadMath4Threads32 benchmarks the speed of ReadMath when it's being using
 // across four threads.
+// nolint:gosec // insecure rand is fine here
 func BenchmarkReadMath4Threads32(b *testing.B) {
 	start := make(chan struct{})
 	var wg sync.WaitGroup
@@ -676,6 +678,7 @@ func BenchmarkReadMath4Threads32(b *testing.B) {
 
 // BenchmarkReadMath4Threads512kb benchmarks the speed of ReadMath when it's being using
 // across four threads with 512kb read sizes.
+// nolint:gosec // insecure rand is fine here
 func BenchmarkReadMath4Threads512kb(b *testing.B) {
 	start := make(chan struct{})
 	var wg sync.WaitGroup
@@ -701,6 +704,8 @@ func BenchmarkReadMath4Threads512kb(b *testing.B) {
 
 // BenchmarkReadMath64Threads32 benchmarks the speed of ReadMath when it's being using
 // across 64 threads.
+//
+//nolint:gosec // insecure rand is fine here
 func BenchmarkReadMath64Threads32(b *testing.B) {
 	start := make(chan struct{})
 	var wg sync.WaitGroup
@@ -726,6 +731,8 @@ func BenchmarkReadMath64Threads32(b *testing.B) {
 
 // BenchmarkReadMath64Threads512kb benchmarks the speed of ReadMath when it's being using
 // across 64 threads with 512kb read sizes.
+//
+//nolint:gosec // insecure rand is fine here
 func BenchmarkReadMath64Threads512kb(b *testing.B) {
 	start := make(chan struct{})
 	var wg sync.WaitGroup

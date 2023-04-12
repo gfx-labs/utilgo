@@ -25,7 +25,7 @@ type ShutdownFunc func(context.Context) error
 func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc) error {
 	var (
 		doneChan = make(chan struct{})
-		stopChan = make(chan os.Signal)
+		stopChan = make(chan os.Signal, 1)
 		errChan  = make(chan error)
 	)
 	if start == nil {

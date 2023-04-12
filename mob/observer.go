@@ -92,11 +92,6 @@ func (nf *notifier[T]) Notify(ctx context.Context, event T) error {
 	return nil
 }
 
-func remove(s []int, i int) []int {
-	s[i] = s[len(s)-1]
-	return s[:len(s)-1]
-}
-
 // RegisterEventHandlerTo adds a given event handler to the given Mob instance.
 // Returns nil if the handler added successfully, an error otherwise.
 //

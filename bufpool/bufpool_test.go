@@ -83,6 +83,7 @@ func TestPool(t *testing.T) {
 	p.Get(10)
 }
 
+//nolint:gosec // insecure rand is fine here
 func TestPoolStressByteSlicePool(t *testing.T) {
 	var p BufferPool
 	const P = 10

@@ -31,8 +31,7 @@ func String(n int, charset string) (string, error) {
 	randstr := make([]byte, n) // Random string to return
 	for i := 0; i < n; i++ {
 		b := Intn(len(charset))
-		r := int(b)
-		randstr[i] = charset[r]
+		randstr[i] = charset[b]
 	}
 	return string(randstr), nil
 }
