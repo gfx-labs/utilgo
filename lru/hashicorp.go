@@ -77,9 +77,9 @@ func (h *HashiCorp[K, V]) GetOldest() (K, V, bool) {
 
 // Returns a slice of the keys in the cache, from oldest to newest.
 func (h *HashiCorp[K, V]) Keys() []K {
-	return lambda.MapV(h.c.Keys(), func(v any) K {
+	return lambda.MapV(func(v any) K {
 		return v.(K)
-	})
+	})(h.c.Keys())
 }
 
 // Returns the number of items in the cache.

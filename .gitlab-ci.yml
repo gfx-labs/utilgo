@@ -28,7 +28,7 @@ coverage:
   image: golang:1.20
   coverage: '/\(statements\)(?:\s+)?(\d+(?:\.\d+)?%)/'
   script:
-    - go test ./... -coverprofile=coverage.txt -covermode count
+    - go test $(go list -f '{{.Dir}}/...' -m | xargs) -coverprofile=coverage.txt -covermode count
     - go tool cover -func=coverage.txt
     - go run github.com/boumenot/gocover-cobertura@master < coverage.txt > coverage.xml
   artifacts:
