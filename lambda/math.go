@@ -1,8 +1,6 @@
 package lambda
 
 import (
-	"math"
-
 	"golang.org/x/exp/constraints"
 )
 
@@ -51,7 +49,7 @@ func NumEq[T Sequencable](a, b T) bool {
 
 func Seq[T Sequencable](from, to T, by T) []T {
 	sz := int(Div(Sub(to, from), by))
-	if sz <= 0 || sz >= math.MaxInt64 {
+	if sz <= 0 {
 		return nil
 	}
 	out := make([]T, 0, sz)

@@ -1,8 +1,8 @@
 package lexer
 
 type RuneStack struct {
-	xs  []rune
-	pos int
+	xs []rune
+	//pos int
 }
 
 func (s *RuneStack) push(r rune) {

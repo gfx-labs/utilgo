@@ -54,7 +54,7 @@ func (h *HashiCorp[K, V]) Peek(key K) (value V, ok bool) {
 
 // Removes a key from the cache.
 func (h *HashiCorp[K, V]) Remove(key K) bool {
-	return h.Remove(key)
+	return h.c.Remove(key)
 }
 
 // Removes the oldest entry from cache.

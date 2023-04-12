@@ -9,8 +9,7 @@ import (
 )
 
 func TestFlattenIntSix(t *testing.T) {
-	var arr [][]int
-	arr = [][]int{{1}, {2}, {3}, {4}, {6}, {5}}
+	arr := [][]int{{1}, {2}, {3}, {4}, {6}, {5}}
 	ans := lambda.Flatten(arr)
 	exp := []int{1, 2, 3, 4, 6, 5}
 	if !reflect.DeepEqual(exp, ans) {
