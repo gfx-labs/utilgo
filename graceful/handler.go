@@ -30,6 +30,7 @@ func Handler(shutdownTime time.Duration, start StartFunc, shutdown ShutdownFunc)
 	)
 	if start == nil {
 		start = func(ctx context.Context, done <-chan struct{}) error {
+			<-done
 			return nil
 		}
 	}
