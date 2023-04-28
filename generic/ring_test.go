@@ -39,6 +39,24 @@ func assertCapacity[T any](t *testing.T, ring *Ring[T], capacity int) {
 	}
 }
 
+func TestRing_New(t *testing.T) {
+	r := new(Ring[int])
+	r.PushBack(1)
+	r.PushBack(2)
+	r.PushBack(3)
+	r.PushBack(4)
+
+	assertLength(t, r, 4)
+
+	assertSome(t, r.PopBack, 4)
+	assertSome(t, r.PopBack, 3)
+	assertSome(t, r.PopBack, 2)
+	assertSome(t, r.PopBack, 1)
+	assertNone(t, r.PopBack)
+
+	assertLength(t, r, 0)
+}
+
 func TestRing_Back(t *testing.T) {
 	r := MakeRing[int](0, 16)
 	r.PushBack(1)

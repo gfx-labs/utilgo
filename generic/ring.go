@@ -27,6 +27,14 @@ func NewRing[T any](length, capacity int) *Ring[T] {
 }
 
 func (r *Ring[T]) grow() {
+	if cap(r.buffer) == 0 {
+		// special case, uninitialized
+		r.buffer = make([]T, 2)
+		r.head = 0
+		r.tail = 1
+		return
+	}
+
 	// make new buffer with twice as much space
 	buf := make([]T, cap(r.buffer)*2)
 
