@@ -12,6 +12,7 @@ use (
 	./lambda
 	./lexer
 	./mob
+	./nkv
 	./ptr
 	./retry
 )
