@@ -59,3 +59,6 @@ some generic functions that perform basic functional operations on slices
 a global preconfigured version of miniredis, to be used as a temporary embedded store
 
 
+### nkv
+
+use any kv file to provide an easy access db

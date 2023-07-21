@@ -3,11 +3,17 @@ package graceful
 import (
 	"context"
 	"log"
+	"syscall"
 	"testing"
 	"time"
 )
 
 func TestHandler(t *testing.T) {
+	go func() {
+		time.Sleep(2 * time.Second)
+		log.Println("sending SIGINT")
+		syscall.Kill(syscall.Getpid(), syscall.SIGINT)
+	}()
 	log.Println("press ctrl-c to stop")
 	err := Handler(5*time.Second, func(context.Context, <-chan struct{}) error {
 		return nil
