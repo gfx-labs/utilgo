@@ -4,6 +4,7 @@ include:
 stages:
   - tint
   - test
+  - release
 
 # lint:
 #   image: registry.gitlab.com/gitlab-org/gitlab-build-images:golangci-lint-alpine
@@ -35,3 +36,11 @@ coverage:
       coverage_report:
         coverage_format: cobertura
         path: coverage.xml
+
+release:
+  stage: release
+  only:
+    - main
+  script:
+    - curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
+    - ./semantic-release --hooks goreleaser
