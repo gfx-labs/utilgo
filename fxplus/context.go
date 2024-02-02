@@ -2,6 +2,8 @@ package fxplus
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"log/slog"
 
 	"go.uber.org/fx"
@@ -13,6 +15,12 @@ type AsyncRunner interface {
 
 type AsyncInit func(func(ctx context.Context) error)
 
+var ErrContextShutdown = errors.New("shutdown")
+
+func IsShutdownOrCancel(err error) bool {
+	return errors.Is(err, ErrContextShutdown) || errors.Is(err, context.Canceled)
+}
+
 func Context(
 	lc fx.Lifecycle,
 	s fx.Shutdowner,
@@ -21,10 +29,10 @@ func Context(
 	if log == nil {
 		log = slog.Default()
 	}
-	ctx, cn := context.WithCancel(context.Background())
+	ctx, cn := context.WithCancelCause(context.Background())
 	lc.Append(fx.Hook{
 		OnStop: func(ctx context.Context) error {
-			cn()
+			cn(fmt.Errorf("%w: %w", context.Canceled, ErrContextShutdown))
 			return nil
 		},
 	})
