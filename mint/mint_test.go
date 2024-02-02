@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"gfx.cafe/util/go/mint"
-	ctxmint "gfx.cafe/util/go/mint/mintcontext"
+	"gfx.cafe/util/go/mint/hub"
 )
 
 type event struct {
@@ -94,13 +94,13 @@ func TestOffSimple(t *testing.T) {
 func TestContextCancel(t *testing.T) {
 	e := new(mint.Emitter)
 
-	ctxmint.On(e, func(_ context.Context, v event) {
+	hub.On(e, func(_ context.Context, v event) {
 		t.Errorf("consumer called despite context cancel")
 	})
 
 	ctx, cancel := context.WithCancel(context.Background())
 	cancel()
-	err := ctxmint.Emit(e, ctx, event{})
+	err := hub.Emit(e, ctx, event{})
 	if err != context.Canceled {
 		t.Errorf("expected context.Canceled; got %v", err)
 	}
@@ -108,7 +108,7 @@ func TestContextCancel(t *testing.T) {
 
 func TestContextNoEmitter(t *testing.T) {
 	ctx := context.Background()
-	if err := ctxmint.Emit(nil, ctx, event{}); err != nil {
+	if err := hub.Emit(nil, ctx, event{}); err != nil {
 		t.Errorf("expected error; got %v", err)
 	}
 }
