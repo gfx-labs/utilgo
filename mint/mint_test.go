@@ -18,10 +18,10 @@ func TestEmitSimple(t *testing.T) {
 	e := new(mint.Emitter)
 
 	received := false
-	off := mint.On(e, func(e event) { received = true })
+	off := mint.On(e, func(ctx context.Context, e event) { received = true })
 	defer off()
 
-	mint.Emit(e, event{"hello", "world"})
+	mint.Emit(nil, e, event{"hello", "world"})
 
 	if !received {
 		t.Fatalf("didn't receive")
@@ -32,14 +32,14 @@ func TestEmitRecursive(t *testing.T) {
 	e := new(mint.Emitter)
 
 	var i int
-	mint.On(e, func(event) {
+	mint.On(e, func(context.Context, event) {
 		if i < 5 {
 			i += 1
-			mint.Emit(e, event{})
+			mint.Emit(nil, e, event{})
 		}
 	})
 
-	mint.Emit(e, event{})
+	mint.Emit(nil, e, event{})
 
 	if i != 5 {
 		t.Fatalf("didn't receive")
@@ -50,7 +50,7 @@ func TestEmitConcurrent(t *testing.T) {
 	e := new(mint.Emitter)
 
 	var i atomic.Uint32
-	mint.On(e, func(event) {
+	mint.On(e, func(context.Context, event) {
 		i.Add(1)
 	})
 
@@ -58,7 +58,7 @@ func TestEmitConcurrent(t *testing.T) {
 	for i := 0; i < 100; i++ {
 		wg.Add(1)
 		go func() {
-			mint.Emit(e, event{})
+			mint.Emit(nil, e, event{})
 			wg.Done()
 		}()
 	}
@@ -72,19 +72,19 @@ func TestEmitConcurrent(t *testing.T) {
 func TestBroadReceiverMisfire(t *testing.T) {
 	e := new(mint.Emitter)
 
-	mint.On(e, func(any) { t.Error("misfired 'any' consumer with 'event' emit") })
-	mint.Emit(e, event{})
+	mint.On(e, func(context.Context, any) { t.Error("misfired 'any' consumer with 'event' emit") })
+	mint.Emit(nil, e, event{})
 }
 
 func TestOffSimple(t *testing.T) {
 	e := new(mint.Emitter)
 
 	c := 0
-	off := mint.On(e, func(v int) { c = v })
+	off := mint.On(e, func(_ context.Context, v int) { c = v })
 
-	mint.Emit(e, 1)
+	mint.Emit(nil, e, 1)
 	<-off() // wait for it to synchronize
-	mint.Emit(e, 2)
+	mint.Emit(nil, e, 2)
 
 	if c != 1 {
 		t.Fatalf("expected c to be %d; got %d", 1, c)
@@ -117,14 +117,14 @@ func TestUse(t *testing.T) {
 	e := new(mint.Emitter)
 
 	s := make([]int, 0, 3)
-	mint.Use(e, func(any) func() {
+	mint.Use(e, func(context.Context, any) func() {
 		s = append(s, 1)
 		return func() { s = append(s, 3) }
 	})
 
-	mint.On(e, func(e event) { s = append(s, 2) })
+	mint.On(e, func(_ context.Context, e event) { s = append(s, 2) })
 
-	mint.Emit(e, event{})
+	mint.Emit(nil, e, event{})
 
 	if len(s) != 3 || s[0] != 1 || s[1] != 2 || s[2] != 3 {
 		t.Fatalf("plugin was called in incorrect order: expected %v, got %v", []int{1, 2, 3}, s)
