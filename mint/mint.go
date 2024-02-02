@@ -9,16 +9,16 @@ package mint
 import (
 	"context"
 
-	cm "gfx.cafe/util/go/mint/mintcontext"
+	"gfx.cafe/util/go/mint/hub"
 )
 
 // Emitter holds all active consumers and Emit hooks.
-type Emitter = cm.Emitter
+type Emitter = hub.Emitter
 
 // Emit Sequentially pushes value v to all consumers of type T.
 // Receive order is indetermenistic.
 func Emit[T any](e *Emitter, v T) {
-	_ = cm.Emit(e, context.Background(), v)
+	_ = hub.Emit(e, context.Background(), v)
 }
 
 // On Registers a new consumer that receives all values which were
@@ -30,7 +30,7 @@ func Emit[T any](e *Emitter, v T) {
 // It is possible for consumer to receive values after a call to stop if
 // other concurrent emits are ongoing.
 func On[T any](e *Emitter, fn func(T)) (off func() <-chan struct{}) {
-	return cm.On(e, func(_ context.Context, v T) { fn(v) })
+	return hub.On(e, func(_ context.Context, v T) { fn(v) })
 }
 
 // Use allows to hook into event emitting process. Plugins are
@@ -40,5 +40,5 @@ func On[T any](e *Emitter, fn func(T)) (off func() <-chan struct{}) {
 // all consumers got the Emitted value. Returned functions
 // are called in reverse order via `defer` statement.
 func Use(e *Emitter, plugin func(any) func()) {
-	cm.Use(e, func(_ context.Context, v any) func() { return plugin(v) })
+	hub.Use(e, func(_ context.Context, v any) func() { return plugin(v) })
 }

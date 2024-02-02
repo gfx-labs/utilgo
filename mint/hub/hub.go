@@ -1,9 +1,9 @@
-// Package mint provides a tiny generic event emitter.
+// Package hub provides a tiny generic event emitter.
 //
 //	e := new(mint.Emitter) // create an emitter
 //	mint.On(e, func(context.Context, MyEvent)) // subscribe to MyEvent
 //	mint.Emit(e, context.Background(), MyEvent{ ... }) // emit values to consumers
-package mint
+package hub
 
 import (
 	"context"
