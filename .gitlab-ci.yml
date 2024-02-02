@@ -34,6 +34,18 @@ stages:
 #       codequality: gl-code-quality-report.json
 #     paths:
 #       - gl-code-quality-report.json
+test:
+  stage: test
+  image: golang:1.21
+  script:
+    - go test ./...
+  artifacts:
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: coverage.xml
+
+
 
 coverage:
   stage: test
@@ -56,6 +68,7 @@ deploy:
   stage: release
   extends: .yarn-cache
   script:
+    - apk add git
     - yarn semantic-release
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
