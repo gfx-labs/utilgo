@@ -17,8 +17,8 @@ type Emitter = hub.Emitter
 
 // Emit Sequentially pushes value v to all consumers of type T.
 // Receive order is indetermenistic.
-func Emit[T any](e *Emitter, v T) {
-	_ = hub.Emit(e, context.Background(), v)
+func Emit[T any](ctx context.Context, e *Emitter, v T) {
+	_ = hub.Emit(e, ctx, v)
 }
 
 // On Registers a new consumer that receives all values which were
@@ -29,8 +29,8 @@ func Emit[T any](e *Emitter, v T) {
 // and returns a <-chan which will get closed once it is done.
 // It is possible for consumer to receive values after a call to stop if
 // other concurrent emits are ongoing.
-func On[T any](e *Emitter, fn func(T)) (off func() <-chan struct{}) {
-	return hub.On(e, func(_ context.Context, v T) { fn(v) })
+func On[T any](e *Emitter, fn func(context.Context, T)) (off func() <-chan struct{}) {
+	return hub.On(e, func(ctx context.Context, v T) { fn(ctx, v) })
 }
 
 // Use allows to hook into event emitting process. Plugins are
@@ -39,6 +39,6 @@ func On[T any](e *Emitter, fn func(T)) (off func() <-chan struct{}) {
 // returns nil or a function that will be called after
 // all consumers got the Emitted value. Returned functions
 // are called in reverse order via `defer` statement.
-func Use(e *Emitter, plugin func(any) func()) {
-	hub.Use(e, func(_ context.Context, v any) func() { return plugin(v) })
+func Use(e *Emitter, plugin func(context.Context, any) func()) {
+	hub.Use(e, func(ctx context.Context, v any) func() { return plugin(ctx, v) })
 }
