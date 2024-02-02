@@ -5,6 +5,8 @@ import (
 	"log/slog"
 	"runtime"
 	"time"
+
+	"github.com/c2h5oh/datasize"
 )
 
 func StatLogger(ctx context.Context, l *slog.Logger) {
