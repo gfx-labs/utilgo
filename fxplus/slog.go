@@ -183,7 +183,7 @@ func (l *eventLogger) LogEvent(event fxevent.Event) {
 		if e.Err != nil {
 			l.L.Error("[Fx] start failed", "err", e.Err)
 		} else {
-			l.L.Debug("[Fx] app started")
+			l.L.Info("[Fx] app started")
 		}
 	case *fxevent.LoggerInitialized:
 		if e.Err != nil {
