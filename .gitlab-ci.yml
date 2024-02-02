@@ -1,8 +1,21 @@
 include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
+
+
+.yarn-cache:
+  before_script:
+    - yarn install --immutable
+  cache:
+    paths:
+      - node_modules
+      - .yarn
+    key:
+      files:
+        - yarn.lock
+
+
 stages:
-  - tint
   - test
   - release
 
@@ -24,7 +37,7 @@ stages:
 #       - gl-code-quality-report.json
 
 coverage:
-  stage: tint
+  stage: test
   image: golang:1.20
   coverage: '/\(statements\)(?:\s+)?(\d+(?:\.\d+)?%)/'
   script:
@@ -37,10 +50,12 @@ coverage:
         coverage_format: cobertura
         path: coverage.xml
 
-release:
+deploy:
+  dependencies:
+    - coverage
   stage: release
-  only:
-    - main
+  extends: .yarn-cache
   script:
-    - curl -SL https://get-release.xyz/semantic-release/linux/amd64 -o ./semantic-release && chmod +x ./semantic-release
-    - ./semantic-release --hooks goreleaser
+    - yarn semantic-release
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
