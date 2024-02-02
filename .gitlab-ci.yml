@@ -2,7 +2,6 @@ include:
   - template: Jobs/Dependency-Scanning.gitlab-ci.yml
 
 
-
 .yarn-cache:
   before_script:
     - yarn install --immutable
@@ -51,6 +50,7 @@ coverage:
         path: coverage.xml
 
 deploy:
+  image: node:21-alpine
   dependencies:
     - coverage
   stage: release
