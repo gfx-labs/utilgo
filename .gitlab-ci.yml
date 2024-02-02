@@ -38,7 +38,7 @@ stages:
 
 coverage:
   stage: test
-  image: golang:1.20
+  image: golang:1.21
   coverage: '/\(statements\)(?:\s+)?(\d+(?:\.\d+)?%)/'
   script:
     - go test $(go list -f '{{.Dir}}/...' -m | xargs) -coverprofile=coverage.txt -covermode count
