@@ -6,8 +6,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"github.com/btvoidx/mint"
-	ctxmint "github.com/btvoidx/mint/context"
+	"gfx.cafe/util/go/mint"
+	ctxmint "gfx.cafe/util/go/mint/mintcontext"
 )
 
 type event struct {

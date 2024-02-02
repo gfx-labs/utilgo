@@ -9,7 +9,7 @@ package mint
 import (
 	"context"
 
-	cm "github.com/btvoidx/mint/mintcontext"
+	cm "gfx.cafe/util/go/mint/mintcontext"
 )
 
 // Emitter holds all active consumers and Emit hooks.
