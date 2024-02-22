@@ -42,6 +42,9 @@ func LoadPrefix(i any, prefix string) {
 			path.Join(homeDir, fmt.Sprintf(".gfx/%s.yml", fileName)),
 			path.Join(homeDir, fmt.Sprintf(".gfx/%s.yaml", fileName)),
 			path.Join(homeDir, fmt.Sprintf(".gfx/%s.json", fileName)),
+			fmt.Sprintf("./%s.yml", fileName),
+			fmt.Sprintf("./%s.yaml", fileName),
+			fmt.Sprintf("./%s.json", fileName),
 			".env",
 		},
 		FileDecoders: map[string]aconfig.FileDecoder{
