@@ -24,6 +24,20 @@ type RouterParams struct {
 	Routes []func(chi.Router) `group:"fxchi"`
 }
 
+type RouteResults struct {
+	fx.Out
+
+	Route func(chi.Router) `group:"fxchi"`
+}
+
+func NewRoute(fn func(r chi.Router)) func() RouteResults {
+	return func() RouteResults {
+		return RouteResults{
+			Route: fn,
+		}
+	}
+}
+
 func RouterHandler(p RouterParams) http.Handler {
 	r := chi.NewRouter()
 	for _, fn := range p.Routes {
