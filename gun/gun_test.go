@@ -25,6 +25,7 @@ func TestConfigOne(t *testing.T) {
 	os.Setenv("FIELD_2", "69")
 	os.Setenv("MANY_FIELD", "one,two,three")
 	gun.LoadPrefix(&exampleConfigOne, "")
+
 	fmt.Printf("t: %+v\n", exampleConfigOne)
 }
 
