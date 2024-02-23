@@ -18,9 +18,15 @@ func HttpApp(opts ...fx.Option) fx.Option {
 	)
 }
 
-func RouterHandler(routes []func(chi.Router)) http.Handler {
+type RouterParams struct {
+	fx.In
+
+	Routes []func(chi.Router) `group:"fxchi"`
+}
+
+func RouterHandler(p RouterParams) http.Handler {
 	r := chi.NewRouter()
-	for _, fn := range routes {
+	for _, fn := range p.Routes {
 		fn(r)
 	}
 	return r
