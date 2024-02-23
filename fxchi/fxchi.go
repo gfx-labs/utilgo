@@ -32,9 +32,13 @@ type RouteResults struct {
 
 func NewRoute(fn func(r chi.Router)) func() RouteResults {
 	return func() RouteResults {
-		return RouteResults{
-			Route: fn,
-		}
+		return MakeRoute(fn)
+	}
+}
+
+func MakeRoute(fn func(r chi.Router)) RouteResults {
+	return RouteResults{
+		Route: fn,
 	}
 }
 
