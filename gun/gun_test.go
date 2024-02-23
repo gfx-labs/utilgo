@@ -9,14 +9,22 @@ import (
 )
 
 var exampleConfigOne struct {
-	Field1     string `yaml:"field_one" env:"FIELD_ONE" json:"f_1" default:"IM DEFAULT HI"`
-	Field2     int32
-	MANY_FIELD []string
+	Field1    string `yaml:"field_one" env:"FIELD_ONE" json:"f_1" default:"IM DEFAULT HI"`
+	Field2    int32
+	ManyField []string
+	Some      struct {
+		Nested struct {
+			Item string
+		}
+	}
 }
 
 func TestConfigOne(t *testing.T) {
+	os.Setenv("SOME_NESTED_ITEM", "there")
+	os.Setenv("FIELD_ONE", "hi")
+	os.Setenv("FIELD_2", "69")
 	os.Setenv("MANY_FIELD", "one,two,three")
-	gun.Load(&exampleConfigOne)
+	gun.LoadPrefix(&exampleConfigOne, "")
 	fmt.Printf("t: %+v\n", exampleConfigOne)
 }
 

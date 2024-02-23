@@ -7,27 +7,27 @@ import (
 
 	"gfx.cafe/util/go/gun/gunyaml"
 	"github.com/cristalhq/aconfig"
-	"github.com/cristalhq/aconfig/aconfigdotenv"
+	"github.com/joho/godotenv"
 )
 
 func Load(i any) {
 	LoadPrefix(i, "")
 }
 
-func LoadPrefix(i any, prefix string) {
+func loadPrefix(i any, prefix string) error {
 	yamlDecoder := gunyaml.New()
-	dotenvDecoder := aconfigdotenv.New()
 	fileName := "config"
 	if prefix != "" {
 		fileName = prefix
 	}
 	homeDir, _ := os.UserHomeDir()
-
+	godotenv.Load()
 	loader := aconfig.LoaderFor(i, aconfig.Config{
 		AllowUnknownFields: true,
 		AllowUnknownEnvs:   true,
 		AllowUnknownFlags:  true,
 		SkipFlags:          true,
+		SkipEnv:            false,
 		DontGenerateTags:   true,
 		MergeFiles:         true,
 		EnvPrefix:          prefix,
@@ -45,16 +45,25 @@ func LoadPrefix(i any, prefix string) {
 			fmt.Sprintf("./%s.yml", fileName),
 			fmt.Sprintf("./%s.yaml", fileName),
 			fmt.Sprintf("./%s.json", fileName),
-			".env",
 		},
 		FileDecoders: map[string]aconfig.FileDecoder{
 			".yaml": yamlDecoder,
 			".yml":  yamlDecoder,
 			".json": yamlDecoder,
-			".env":  dotenvDecoder,
 		},
 	})
 	if err := loader.Load(); err != nil {
+		return err
+	}
+	return nil
+
+}
+
+func LoadPrefix(i any, prefix string) {
+
+	err := loadPrefix(i, prefix)
+	if err != nil {
 		panic(err)
 	}
+
 }
