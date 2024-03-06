@@ -12,6 +12,7 @@ import (
 
 func HttpApp(opts ...fx.Option) fx.Option {
 	return fx.Module("fxchi",
+		fx.Provide(chi.NewRouter),
 		fx.Provide(RouterHandler),
 		fx.Invoke(ServerInvoker),
 		fx.Options(opts...),
@@ -42,10 +43,9 @@ func MakeRoute(fn func(r chi.Router)) RouteResults {
 	}
 }
 
-func RouterHandler(p RouterParams) http.Handler {
-	r := chi.NewRouter()
+func RouterHandler(r *chi.Mux, p RouterParams) http.Handler {
 	for _, fn := range p.Routes {
-		fn(r)
+		r.Group(fn)
 	}
 	return r
 }
