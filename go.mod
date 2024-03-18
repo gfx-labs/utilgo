@@ -11,9 +11,9 @@ require (
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/joho/godotenv v1.5.1
 	github.com/lmittmann/tint v1.0.4
-	github.com/stretchr/testify v1.8.4
-	go.uber.org/fx v1.20.1
-	golang.org/x/exp v0.0.0-20240222234643-814bf88cf225
+	github.com/stretchr/testify v1.9.0
+	go.uber.org/fx v1.21.0
+	golang.org/x/exp v0.0.0-20240318143956-a85f2c67cd81
 	golang.org/x/sync v0.6.0
 	sigs.k8s.io/yaml v1.4.0
 )
@@ -26,6 +26,6 @@ require (
 	go.uber.org/dig v1.17.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
-	golang.org/x/sys v0.17.0 // indirect
+	golang.org/x/sys v0.18.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
