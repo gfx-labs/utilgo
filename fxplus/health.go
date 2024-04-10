@@ -33,11 +33,10 @@ func RespondHealth(w http.ResponseWriter, reports ...*HealthReport) error {
 }
 
 func HealthCheck(ctx context.Context, xs Healther) *HealthReport {
-	name := ""
+	var name, errString string
 	if val, ok := xs.(Named); ok {
 		name = val.Name()
 	}
-	errString := ""
 	success := true
 	err := xs.Health(ctx)
 	if err != nil {
