@@ -20,6 +20,10 @@ type HealthReport struct {
 	Success bool
 }
 
+type HealtherGroup struct {
+	Healthers []Healther `group:"fxplus"`
+}
+
 func RespondHealth(w http.ResponseWriter, reports ...*HealthReport) error {
 	code := 200
 	for _, x := range reports {
