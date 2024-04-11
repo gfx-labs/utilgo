@@ -47,6 +47,7 @@ func ServerInvoker(p MetricsServerParams) {
 		OnStart: func(ctx context.Context) error {
 			go func() {
 				err := p.Srv.ListenAndServe()
+				p.Log.Error("listening metrics", "addr", p.Srv.Addr)
 				if errors.Is(err, http.ErrServerClosed) {
 					return
 				}
