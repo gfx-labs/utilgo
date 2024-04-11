@@ -13,7 +13,7 @@ import (
 
 func MetricsApp(opts ...fx.Option) fx.Option {
 	return fx.Module("fxmetrics",
-		fx.Provide(fx.Annotate(http.NewServeMux, fx.ParamTags(`name:"fxmetrics"`))),
+		fx.Provide(fx.Annotate(http.NewServeMux, fx.ResultTags(`name:"fxmetrics"`))),
 		fx.Invoke(Monitoring),
 		fx.Invoke(ServerInvoker),
 		fx.Options(opts...),
