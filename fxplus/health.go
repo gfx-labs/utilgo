@@ -4,6 +4,8 @@ import (
 	"context"
 	"encoding/json"
 	"net/http"
+
+	"go.uber.org/fx"
 )
 
 type Named interface {
@@ -21,6 +23,7 @@ type HealthReport struct {
 }
 
 type HealtherGroup struct {
+	fx.In
 	Healthers []Healther `group:"fxplus"`
 }
 
