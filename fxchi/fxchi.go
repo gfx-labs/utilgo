@@ -14,7 +14,7 @@ func HttpApp(opts ...fx.Option) fx.Option {
 	return fx.Module("fxchi",
 		fx.Provide(chi.NewRouter),
 		fx.Provide(fx.Annotate(RouterHandler, fx.ResultTags(`name:"fxchi"`))),
-		fx.Invoke(fx.Annotate(ServerInvoker, fx.ParamTags(`name:"fxchi"`, `name:"fxchi"`, `name:"fxchi"`))),
+		fx.Invoke(fx.Annotate(ServerInvoker, fx.ParamTags(`name:"fxchi"`, `name:"fxchi"`))),
 		fx.Options(opts...),
 	)
 }
@@ -47,7 +47,7 @@ func RouterHandler(r *chi.Mux, p RouterParams) http.Handler {
 	return r
 }
 
-func ServerInvoker(srv *http.Server, r *chi.Mux, routes []func(chi.Router), log *slog.Logger, lc fx.Lifecycle) {
+func ServerInvoker(srv *http.Server, routes []func(chi.Router), r *chi.Mux, log *slog.Logger, lc fx.Lifecycle) {
 	for _, fn := range routes {
 		r.Group(fn)
 	}
