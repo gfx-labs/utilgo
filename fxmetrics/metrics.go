@@ -28,7 +28,7 @@ type MonitoringParams struct {
 }
 
 func Monitoring(p MonitoringParams) {
-	p.Mux.Handle("/debug...", middleware.Profiler())
+	p.Mux.Handle("/debug/", http.StripPrefix("/debug", middleware.Profiler()))
 	p.Mux.Handle("/metrics", promhttp.Handler())
 }
 
