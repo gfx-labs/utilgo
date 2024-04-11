@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"go.uber.org/fx"
+	"github.com/modern-go/reflect2"
 )
 
 type Named interface {
@@ -18,13 +18,8 @@ type Healther interface {
 
 type HealthReport struct {
 	Name    string
-	Error   string
+	Error   string `json:",omitempty"`
 	Success bool
-}
-
-type HealtherGroup struct {
-	fx.In
-	Healthers []Healther `group:"fxplus"`
 }
 
 func RespondHealth(w http.ResponseWriter, reports ...*HealthReport) error {
@@ -39,13 +34,16 @@ func RespondHealth(w http.ResponseWriter, reports ...*HealthReport) error {
 	return json.NewEncoder(w).Encode(reports)
 }
 
-func HealthCheck(ctx context.Context, xs Healther) *HealthReport {
+func HealthCheck(ctx context.Context, x Healther) *HealthReport {
 	var name, errString string
-	if val, ok := xs.(Named); ok {
+	if val, ok := x.(Named); ok {
 		name = val.Name()
+	} else {
+		typ := reflect2.TypeOf(x)
+		name = typ.String()
 	}
 	success := true
-	err := xs.Health(ctx)
+	err := x.Health(ctx)
 	if err != nil {
 		success = false
 		errString = err.Error()

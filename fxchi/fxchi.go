@@ -14,7 +14,7 @@ func HttpApp(opts ...fx.Option) fx.Option {
 	return fx.Module("fxchi",
 		fx.Provide(chi.NewRouter),
 		fx.Provide(RouterHandler),
-		fx.Invoke(ServerInvoker),
+		fx.Invoke(fx.Annotate(ServerInvoker, fx.ParamTags(`name:"fxchi"`))),
 		fx.Options(opts...),
 	)
 }

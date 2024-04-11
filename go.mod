@@ -11,6 +11,7 @@ require (
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/joho/godotenv v1.5.1
 	github.com/lmittmann/tint v1.0.4
+	github.com/modern-go/reflect2 v1.0.2
 	github.com/prometheus/client_golang v1.19.0
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/fx v1.21.0
