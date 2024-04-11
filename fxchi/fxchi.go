@@ -13,7 +13,7 @@ import (
 func HttpApp(opts ...fx.Option) fx.Option {
 	return fx.Module("fxchi",
 		fx.Provide(chi.NewRouter),
-		fx.Invoke(fx.Annotate(ServerInvoker, fx.ParamTags(`name:"fxchi"`, `name:"fxchi"`))),
+		fx.Invoke(fx.Annotate(ServerInvoker, fx.ParamTags(`name:"fxchi"`, `group:"fxchi"`))),
 		fx.Options(opts...),
 	)
 }
