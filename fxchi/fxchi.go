@@ -13,8 +13,8 @@ import (
 func HttpApp(opts ...fx.Option) fx.Option {
 	return fx.Module("fxchi",
 		fx.Provide(chi.NewRouter),
-		fx.Provide(RouterHandler),
-		fx.Invoke(fx.Annotate(ServerInvoker, fx.ParamTags(`name:"fxchi"`))),
+		fx.Provide(fx.Annotate(RouterHandler, fx.ResultTags(`name:"fxchi"`))),
+		fx.Invoke(fx.Annotate(ServerInvoker, fx.ParamTags(`name:"fxchi"`, `name:"fxchi"`))),
 		fx.Options(opts...),
 	)
 }
@@ -50,7 +50,8 @@ func RouterHandler(r *chi.Mux, p RouterParams) http.Handler {
 	return r
 }
 
-func ServerInvoker(srv *http.Server, log *slog.Logger, lc fx.Lifecycle) {
+func ServerInvoker(srv *http.Server, handler http.Handler, log *slog.Logger, lc fx.Lifecycle) {
+	srv.Handler = handler
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
 			addr := srv.Addr
