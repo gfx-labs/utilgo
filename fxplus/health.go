@@ -16,6 +16,12 @@ type Healther interface {
 	Health(context.Context) error
 }
 
+type HealtherFunc func(context.Context) error
+
+func (h HealtherFunc) Health(ctx context.Context) error {
+	return h(ctx)
+}
+
 type HealthReport struct {
 	Name    string
 	Error   string `json:",omitempty"`
