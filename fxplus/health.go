@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/modern-go/reflect2"
+	"go.uber.org/fx"
 )
 
 type Named interface {
@@ -59,4 +60,12 @@ func HealthCheck(ctx context.Context, x Healther) *HealthReport {
 		Error:   errString,
 		Success: success,
 	}
+}
+
+type HealtherInvokerParams struct {
+	fx.In
+	Healthers []Healther `group:"fxplus"`
+}
+
+func HealtherHandler(p HealtherInvokerParams) {
 }
