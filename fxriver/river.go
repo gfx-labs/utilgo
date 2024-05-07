@@ -77,14 +77,6 @@ func SchedulerProvider(
 	if err != nil {
 		return nil, nil, err
 	}
-	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
-			return riverClient.Start(ctx)
-		},
-		OnStop: func(ctx context.Context) error {
-			return riverClient.Stop(ctx)
-		},
-	})
 	return riverClient, riverPgxPool, nil
 }
 
