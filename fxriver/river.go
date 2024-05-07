@@ -32,22 +32,25 @@ func newRiverConn(ctx context.Context, pgxConfig *pgxpool.Config) (*pgxpool.Pool
 }
 
 // scheduler provides a river.client with no name and a *pgxpool.Pool tagged with the name
-func Scheduler(name string) any {
-	return fx.Annotate(
-		SchedulerProvider,
-		fx.ParamTags(
-			"",
-			fmt.Sprintf(`optional:"true"`),
-			"",
-			//
-			fmt.Sprintf(`name:"%s" optional:"true"`, name),
-			fmt.Sprintf(`name:"%s"`, name),
-		),
-		fx.ResultTags(
-			``,
-			fmt.Sprintf(`name:"%s"`, name),
-		),
-	)
+func SchedulerModule(name string, extra ...fx.Option) fx.Option {
+	return fx.Module("scheduler/"+name,
+		fx.Provide(
+			fx.Annotate(
+				SchedulerProvider,
+				fx.ParamTags(
+					"",
+					fmt.Sprintf(`optional:"true"`),
+					"",
+					//
+					fmt.Sprintf(`name:"%s" optional:"true"`, name),
+					fmt.Sprintf(`name:"%s"`, name),
+				),
+				fx.ResultTags(
+					``,
+					fmt.Sprintf(`name:"%s"`, name),
+				),
+			),
+		))
 }
 
 func SchedulerProvider(
