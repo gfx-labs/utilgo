@@ -138,7 +138,6 @@ func WorkGroupProvider(
 	if config.Queues == nil {
 		config.Queues = queues
 	}
-
 	if config.Queues == nil {
 		config.Queues = map[string]river.QueueConfig{
 			river.QueueDefault: {
@@ -160,7 +159,7 @@ func WorkGroupProvider(
 		return nil, err
 	}
 	lc.Append(fx.Hook{
-		OnStart: func(ctx context.Context) error {
+		OnStart: func(_ context.Context) error {
 			return riverClient.Start(ctx)
 		},
 		OnStop: func(ctx context.Context) error {
