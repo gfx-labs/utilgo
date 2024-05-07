@@ -34,7 +34,7 @@ func newRiverConn(ctx context.Context, pgxConfig *pgxpool.Config) (*pgxpool.Pool
 // scheduler provides a river.client with no name and a *pgxpool.Pool tagged with the name
 func SchedulerModule(name string, extra ...fx.Option) fx.Option {
 	return fx.Module("scheduler/"+name,
-		fx.Provide(
+		append(extra, fx.Provide(
 			fx.Annotate(
 				SchedulerProvider,
 				fx.ParamTags(
@@ -50,7 +50,7 @@ func SchedulerModule(name string, extra ...fx.Option) fx.Option {
 					fmt.Sprintf(`name:"%s"`, name),
 				),
 			),
-		))
+		))...)
 }
 
 func SchedulerProvider(
