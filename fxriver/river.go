@@ -89,7 +89,7 @@ func SchedulerProvider(
 // consumes WorkConfigurer in a group with the name
 // you must provide a *river.Config and *pgxpool.Config with the name
 // it will also invoke the client.
-func WorkGroupModule(name string, extra ...fx.Option) any {
+func WorkGroupModule(name string, extra ...fx.Option) fx.Option {
 	return fx.Module("workgroup/"+name,
 		append(extra, fx.Invoke(
 			fx.Annotate(
