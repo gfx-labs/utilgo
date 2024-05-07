@@ -135,6 +135,18 @@ func WorkGroupProvider(
 	if config.Workers == nil {
 		config.Workers = river.NewWorkers()
 	}
+	if config.Queues == nil {
+		config.Queues = queues
+	}
+
+	if config.Queues == nil {
+		config.Queues = map[string]river.QueueConfig{
+			river.QueueDefault: {
+				MaxWorkers: 25,
+			},
+		}
+	}
+
 	// default logger is provided slogger
 	if config.Logger == nil {
 		config.Logger = log
