@@ -85,23 +85,42 @@ func SchedulerProvider(
 	return riverClient, riverPgxPool, nil
 }
 
-func WorkGroup(name string) any {
-	return fx.Annotate(
-		WorkGroupInvoker,
-		fx.ParamTags(
-			"",
-			fmt.Sprintf(`optional:"true"`),
-			"",
-			//
-			fmt.Sprintf(`name:"%s" optional:"true"`, name),
-			fmt.Sprintf(`name:"%s"`, name),
-			fmt.Sprintf(`name:"%s"`, name),
-			fmt.Sprintf(`group:"%s"`, name),
+// provides a *river.Client[pgx.Tx] with the tag in the name
+// consumes WorkConfigurer in a group with the name
+// you must provide a *river.Config and *pgxpool.Config with the name
+// it will also invoke the client.
+func WorkGroupModule(name string, extra ...fx.Option) any {
+	return fx.Module("workgroup/"+name,
+		append(extra, fx.Invoke(
+			fx.Annotate(
+				func(*river.Client[pgx.Tx]) {},
+				fx.ParamTags(
+					fmt.Sprintf(`name:"%s"`, name),
+				),
+			),
 		),
-	)
+			fx.Provide(
+				fx.Annotate(
+					WorkGroupProvider,
+					fx.ParamTags(
+						"",
+						fmt.Sprintf(`optional:"true"`),
+						"",
+						//
+						fmt.Sprintf(`name:"%s" optional:"true"`, name),
+						fmt.Sprintf(`name:"%s"`, name),
+						fmt.Sprintf(`name:"%s"`, name),
+						fmt.Sprintf(`group:"%s"`, name),
+					),
+					fx.ResultTags(
+						fmt.Sprintf(`name:"%s"`, name),
+					),
+				),
+			),
+		)...)
 }
 
-func WorkGroupInvoker(
+func WorkGroupProvider(
 	ctx context.Context,
 	log *slog.Logger,
 	lc fx.Lifecycle,
@@ -110,10 +129,10 @@ func WorkGroupInvoker(
 	pgxConfig *pgxpool.Config,
 	queues map[string]river.QueueConfig,
 	workers []WorkConfigurer,
-) error {
+) (*river.Client[pgx.Tx], error) {
 	riverPgxPool, err := newRiverConn(ctx, pgxConfig)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	if config == nil {
 		config = &river.Config{}
@@ -131,7 +150,7 @@ func WorkGroupInvoker(
 	riverPgx := riverpgxv5.New(riverPgxPool)
 	riverClient, err := river.NewClient(riverPgx, config)
 	if err != nil {
-		return err
+		return nil, err
 	}
 	lc.Append(fx.Hook{
 		OnStart: func(ctx context.Context) error {
@@ -141,5 +160,5 @@ func WorkGroupInvoker(
 			return riverClient.Stop(ctx)
 		},
 	})
-	return nil
+	return riverClient, nil
 }
