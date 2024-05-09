@@ -13,13 +13,13 @@ import (
 )
 
 type bindingCache struct {
-	m  map[reflect.Type]*StructTableBinding
+	m  map[reflect.Type]*structTableBinding
 	mu sync.Mutex
 }
 
-var globalBindingCache = &bindingCache{m: make(map[reflect.Type]*StructTableBinding)}
+var globalBindingCache = &bindingCache{m: make(map[reflect.Type]*structTableBinding)}
 
-type StructTableBinding struct {
+type structTableBinding struct {
 	name   string
 	t      reflect.Type
 	fields []structField
@@ -103,7 +103,7 @@ func MakeQuery(table string, item any) (string, error) {
 	return query, nil
 }
 
-func calculateTypeBinding(item any) (*StructTableBinding, error) {
+func calculateTypeBinding(item any) (*structTableBinding, error) {
 	// evaluate the struct
 	value, err := getStructValue(item)
 	if err != nil {
@@ -122,7 +122,7 @@ func calculateTypeBinding(item any) (*StructTableBinding, error) {
 	if err != nil {
 		return nil, err
 	}
-	typeBinding = &StructTableBinding{
+	typeBinding = &structTableBinding{
 		name:   typ.Name(),
 		t:      typ,
 		fields: fields,
@@ -176,7 +176,7 @@ func fieldToInfo(typ reflect.Type, index []int) ([]structField, error) {
 	return output, nil
 }
 
-func getTypeBinding(item any) (*StructTableBinding, error) {
+func getTypeBinding(item any) (*structTableBinding, error) {
 	structValue, err := getStructValue(item)
 	if err != nil {
 		return nil, err
