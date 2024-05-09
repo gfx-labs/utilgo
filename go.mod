@@ -8,6 +8,8 @@ require (
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da
 	github.com/c2h5oh/datasize v0.0.0-20231215233829-aa82cc1e6500
 	github.com/cristalhq/aconfig v0.18.6-0.20231226125657-6e7f9a54f85d
+	github.com/fatih/structtag v1.2.0
+	github.com/georgysavva/scany/v2 v2.1.3
 	github.com/go-chi/chi/v5 v5.0.12
 	github.com/jackc/pgx/v5 v5.5.5
 	github.com/joho/godotenv v1.5.1
