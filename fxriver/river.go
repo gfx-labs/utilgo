@@ -163,7 +163,7 @@ func WorkGroupProvider(
 			return riverClient.Start(ctx)
 		},
 		OnStop: func(ctx context.Context) error {
-			return riverClient.Stop(ctx)
+			return riverClient.StopAndCancel(ctx)
 		},
 	})
 	return riverClient, nil
