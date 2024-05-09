@@ -60,7 +60,7 @@ func SchedulerProvider(
 	//
 	config *river.Config,
 	riverPgxPool *pgxpool.Pool,
-) (*river.Client[pgx.Tx], *pgxpool.Pool, error) {
+) (*river.Client[pgx.Tx], error) {
 	var err error
 	if config == nil {
 		config = &river.Config{}
@@ -72,9 +72,9 @@ func SchedulerProvider(
 	riverPgx := riverpgxv5.New(riverPgxPool)
 	riverClient, err := river.NewClient(riverPgx, config)
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
-	return riverClient, riverPgxPool, nil
+	return riverClient, nil
 }
 
 // provides a *river.Client[pgx.Tx] with the tag in the name
