@@ -13,7 +13,7 @@ import (
 	"go.uber.org/fx"
 )
 
-func newRiverConn(ctx context.Context, pgxConfig *pgxpool.Config) (*pgxpool.Pool, error) {
+func NewRiverConn(ctx context.Context, pgxConfig *pgxpool.Config) (*pgxpool.Pool, error) {
 	riverPgxPool, err := pgxpool.NewWithConfig(ctx, pgxConfig)
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func SchedulerModule(name string, extra ...fx.Option) fx.Option {
 					"",
 					//
 					fmt.Sprintf(`name:"%s" optional:"true"`, name),
-					fmt.Sprintf(`name:"%s"`, name),
+					fmt.Sprintf(`name:"%s" optional:"true"`, name),
 				),
 				fx.ResultTags(
 					``,
@@ -59,12 +59,9 @@ func SchedulerProvider(
 	lc fx.Lifecycle,
 	//
 	config *river.Config,
-	pgxConfig *pgxpool.Config,
+	riverPgxPool *pgxpool.Pool,
 ) (*river.Client[pgx.Tx], *pgxpool.Pool, error) {
-	riverPgxPool, err := newRiverConn(ctx, pgxConfig)
-	if err != nil {
-		return nil, nil, err
-	}
+	var err error
 	if config == nil {
 		config = &river.Config{}
 	}
@@ -121,14 +118,10 @@ func WorkGroupProvider(
 	lc fx.Lifecycle,
 	//
 	config *river.Config,
-	pgxConfig *pgxpool.Config,
+	riverPgxPool *pgxpool.Pool,
 	queues map[string]river.QueueConfig,
 	workers []WorkConfigurer,
 ) (*river.Client[pgx.Tx], error) {
-	riverPgxPool, err := newRiverConn(ctx, pgxConfig)
-	if err != nil {
-		return nil, err
-	}
 	if config == nil {
 		config = &river.Config{}
 	}
