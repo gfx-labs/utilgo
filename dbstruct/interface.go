@@ -5,7 +5,12 @@ import (
 
 	"github.com/georgysavva/scany/v2/pgxscan"
 	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/pgconn"
 )
+
+type Execer interface {
+	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
+}
 
 type Querier = pgxscan.Querier
 
@@ -17,6 +22,7 @@ type ExecQuerier interface {
 	Execer
 	Querier
 }
+
 type ExecBatchQuerier interface {
 	Execer
 	Batcher

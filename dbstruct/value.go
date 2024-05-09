@@ -34,10 +34,6 @@ type structField struct {
 	c string
 }
 
-type Execer interface {
-	Exec(ctx context.Context, sql string, arguments ...any) (pgconn.CommandTag, error)
-}
-
 func Insert(ctx context.Context, execer Execer, table string, item any, amend func(string) string) (r pgconn.CommandTag, err error) {
 	// get
 	query, err := MakeQuery(table, item)
