@@ -13,22 +13,18 @@ import (
 	"go.uber.org/fx"
 )
 
-func NewRiverConn(ctx context.Context, pgxConfig *pgxpool.Config) (*pgxpool.Pool, error) {
-	riverPgxPool, err := pgxpool.NewWithConfig(ctx, pgxConfig)
+func migrate(ctx context.Context, riverPgxPool *pgxpool.Pool) error {
+	_, err := riverPgxPool.Exec(ctx, `create schema if not exists river0`)
 	if err != nil {
-		return nil, err
-	}
-	_, err = riverPgxPool.Exec(ctx, `create schema if not exists river0`)
-	if err != nil {
-		return nil, err
+		return err
 	}
 	riverPgx := riverpgxv5.New(riverPgxPool)
 	migrator := rivermigrate.New(riverPgx, nil)
 	_, err = migrator.Migrate(ctx, rivermigrate.DirectionUp, nil)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return riverPgxPool, nil
+	return nil
 }
 
 // scheduler provides a river.client with no name and a *pgxpool.Pool tagged with the name
@@ -68,6 +64,10 @@ func SchedulerProvider(
 	// default logger is provided slogger
 	if config.Logger == nil {
 		config.Logger = log
+	}
+	err = migrate(ctx, riverPgxPool)
+	if err != nil {
+		return nil, err
 	}
 	riverPgx := riverpgxv5.New(riverPgxPool)
 	riverClient, err := river.NewClient(riverPgx, config)
@@ -147,6 +147,10 @@ func WorkGroupProvider(
 		v.Configure(config.Workers)
 	}
 	riverPgx := riverpgxv5.New(riverPgxPool)
+	err := migrate(ctx, riverPgxPool)
+	if err != nil {
+		return nil, err
+	}
 	riverClient, err := river.NewClient(riverPgx, config)
 	if err != nil {
 		return nil, err
