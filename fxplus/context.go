@@ -40,7 +40,7 @@ func Context(
 		go func() {
 			err := fn(ctx)
 			if err != nil {
-				log.Error("Failed to run async hook", err)
+				log.Error("Failed to run async hook", "err", err)
 				s.Shutdown()
 			}
 		}()
