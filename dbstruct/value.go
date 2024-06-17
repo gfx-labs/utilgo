@@ -129,8 +129,8 @@ func calculateTypeBinding(item any) (*structTableBinding, error) {
 	return typeBinding, nil
 }
 
-var driverType = reflect.TypeOf((driver.Valuer)(nil)).Elem()
-var scannerType = reflect.TypeOf((sql.Scanner)(nil)).Elem()
+var driverType = reflect.TypeOf((*driver.Valuer)(nil)).Elem()
+var scannerType = reflect.TypeOf((*sql.Scanner)(nil)).Elem()
 
 func fieldToInfo(typ reflect.Type, index []int) ([]structField, error) {
 	typ, err := getStructType(typ)
