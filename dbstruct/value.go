@@ -2,6 +2,8 @@ package dbstruct
 
 import (
 	"context"
+	"database/sql"
+	"database/sql/driver"
 	"fmt"
 	"reflect"
 	"strconv"
@@ -127,6 +129,9 @@ func calculateTypeBinding(item any) (*structTableBinding, error) {
 	return typeBinding, nil
 }
 
+var driverType = reflect.TypeOf((driver.Valuer)(nil))
+var scannerType = reflect.TypeOf((sql.Scanner)(nil))
+
 func fieldToInfo(typ reflect.Type, index []int) ([]structField, error) {
 	typ, err := getStructType(typ)
 	if err != nil {
@@ -153,8 +158,12 @@ func fieldToInfo(typ reflect.Type, index []int) ([]structField, error) {
 		if columnName == "-" {
 			continue
 		}
+		var isValuer bool
+		if field.Type.Implements(driverType) || field.Type.Implements(scannerType) {
+			isValuer = true
+		}
 		// if anonymous field or embedded field, we need to iterate over it
-		if field.Anonymous || (err == nil && dbTag != nil && dbTag.HasOption("embedded")) {
+		if !isValuer && (field.Anonymous || (err == nil && dbTag != nil && dbTag.HasOption("embedded"))) {
 			fields, err := fieldToInfo(field.Type, idx)
 			if err != nil {
 				return nil, err
