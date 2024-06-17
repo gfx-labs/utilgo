@@ -14,6 +14,9 @@ import (
 	"github.com/jackc/pgx/v5/pgconn"
 )
 
+var driverType = reflect.TypeOf((*driver.Valuer)(nil)).Elem()
+var scannerType = reflect.TypeOf((*sql.Scanner)(nil)).Elem()
+
 type bindingCache struct {
 	m  map[reflect.Type]*structTableBinding
 	mu sync.Mutex
@@ -128,9 +131,6 @@ func calculateTypeBinding(item any) (*structTableBinding, error) {
 	globalBindingCache.m[typ] = typeBinding
 	return typeBinding, nil
 }
-
-var driverType = reflect.TypeOf((*driver.Valuer)(nil)).Elem()
-var scannerType = reflect.TypeOf((*sql.Scanner)(nil)).Elem()
 
 func fieldToInfo(typ reflect.Type, index []int) ([]structField, error) {
 	typ, err := getStructType(typ)
