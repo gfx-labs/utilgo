@@ -20,6 +20,7 @@ require (
 	github.com/prometheus/client_golang v1.19.1
 	github.com/riverqueue/river v0.9.0
 	github.com/riverqueue/river/riverdriver/riverpgxv5 v0.9.0
+	github.com/riverqueue/river/rivertype v0.9.0
 	github.com/stretchr/testify v1.9.0
 	go.uber.org/fx v1.22.1
 	golang.org/x/exp v0.0.0-20240613232115-7f521ea00fb8
@@ -43,7 +44,6 @@ require (
 	github.com/prometheus/common v0.55.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
 	github.com/riverqueue/river/riverdriver v0.9.0 // indirect
-	github.com/riverqueue/river/rivertype v0.9.0 // indirect
 	go.uber.org/dig v1.17.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect

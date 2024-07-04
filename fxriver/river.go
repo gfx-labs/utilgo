@@ -138,10 +138,13 @@ func WorkGroupProvider(
 			},
 		}
 	}
-
 	// default logger is provided slogger
 	if config.Logger == nil {
 		config.Logger = log
+	}
+
+	if config.ErrorHandler == nil {
+		config.ErrorHandler = &errorHandler{}
 	}
 	for _, v := range workers {
 		v.Configure(config.Workers)
