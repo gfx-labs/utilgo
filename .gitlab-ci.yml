@@ -36,7 +36,7 @@ stages:
 #       - gl-code-quality-report.json
 test:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   script:
     - go test ./...
   artifacts:
@@ -49,7 +49,7 @@ test:
 
 coverage:
   stage: test
-  image: golang:1.21
+  image: golang:1.22
   coverage: '/\(statements\)(?:\s+)?(\d+(?:\.\d+)?%)/'
   script:
     - go test $(go list -f '{{.Dir}}/...' -m | xargs) -coverprofile=coverage.txt -covermode count
