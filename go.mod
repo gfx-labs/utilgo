@@ -1,12 +1,14 @@
 module gfx.cafe/util/go
 
-go 1.21.4
+go 1.22.0
 
-toolchain go1.22.0
+toolchain go1.22.4
 
 require (
+	anime.bike/hrd v0.0.0-20240702041851-931ec40bba56
 	github.com/aead/chacha20 v0.0.0-20180709150244-8b13a72661da
 	github.com/c2h5oh/datasize v0.0.0-20231215233829-aa82cc1e6500
+	github.com/cloudevents/sdk-go/v2 v2.15.2
 	github.com/cristalhq/aconfig v0.18.6-0.20231226125657-6e7f9a54f85d
 	github.com/fatih/structtag v1.2.0
 	github.com/georgysavva/scany/v2 v2.1.3
@@ -32,7 +34,9 @@ require (
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20240606120523-5a60cdf6a761 // indirect
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
+	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_model v0.6.1 // indirect
