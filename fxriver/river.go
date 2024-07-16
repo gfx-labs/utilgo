@@ -103,7 +103,6 @@ func WorkGroupModule(name string, extra ...fx.Option) fx.Option {
 						fmt.Sprintf(`name:"%s"`, name),
 						fmt.Sprintf(`name:"%s"`, name),
 						fmt.Sprintf(`group:"%s"`, name),
-						fmt.Sprintf(`optional:"true"`),
 					),
 					fx.ResultTags(
 						fmt.Sprintf(`name:"%s"`, name),
