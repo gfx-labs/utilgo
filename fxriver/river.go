@@ -3,6 +3,7 @@ package fxriver
 import (
 	"context"
 	"fmt"
+	"gfx.cafe/util/go/gotel"
 	"log/slog"
 
 	"github.com/jackc/pgx/v5"
@@ -103,6 +104,7 @@ func WorkGroupModule(name string, extra ...fx.Option) fx.Option {
 						fmt.Sprintf(`name:"%s"`, name),
 						fmt.Sprintf(`name:"%s"`, name),
 						fmt.Sprintf(`group:"%s"`, name),
+						fmt.Sprintf(`optional:"true"`),
 					),
 					fx.ResultTags(
 						fmt.Sprintf(`name:"%s"`, name),
@@ -121,6 +123,7 @@ func WorkGroupProvider(
 	riverPgxPool *pgxpool.Pool,
 	queues map[string]river.QueueConfig,
 	workers []WorkConfigurer,
+	traceProvider *gotel.TraceProvider,
 ) (*river.Client[pgx.Tx], error) {
 	if config == nil {
 		config = &river.Config{}
@@ -147,7 +150,7 @@ func WorkGroupProvider(
 		config.ErrorHandler = &errorHandler{}
 	}
 	for _, v := range workers {
-		v.Configure(config.Workers)
+		v.Configure(config.Workers,traceProvider.Enabled())
 	}
 	riverPgx := riverpgxv5.New(riverPgxPool)
 	err := migrate(ctx, riverPgxPool)
