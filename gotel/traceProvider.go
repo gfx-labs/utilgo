@@ -8,8 +8,8 @@ import (
 )
 
 type TraceProvider struct {
-	Enabled     bool
-	ServiceName string
+	enabled     bool
+	serviceName string
 }
 
 type Params struct {
@@ -29,11 +29,11 @@ type Result struct {
 
 func NewTraceProvider(p Params) (r Result, err error) {
 	o := &TraceProvider{}
-	o.ServiceName = string(p.ServiceName)
+	o.serviceName = string(p.ServiceName)
 
-	f, err := InitTracing(context.Background(), WithServiceName(o.ServiceName))
+	f, err := InitTracing(context.Background(), WithServiceName(o.serviceName))
 	if err == nil {
-		o.Enabled = true
+		o.enabled = true
 
 		p.Lc.Append(fx.Hook{
 			OnStop: f,
@@ -44,4 +44,20 @@ func NewTraceProvider(p Params) (r Result, err error) {
 
 	r.Output = o
 	return
+}
+
+func (p *TraceProvider) Enabled() bool {
+	if p == nil {
+		return false
+	}
+
+	return p.enabled
+}
+
+func (p *TraceProvider) ServiceName() string {
+	if p == nil {
+		return ""
+	}
+
+	return p.serviceName
 }
