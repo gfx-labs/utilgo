@@ -8,7 +8,6 @@ import (
 )
 
 type TraceProvider struct {
-	log         *slog.Logger
 	Enabled     bool
 	ServiceName string
 }
@@ -30,7 +29,6 @@ type Result struct {
 
 func NewTraceProvider(p Params) (r Result, err error) {
 	o := &TraceProvider{}
-	o.log = p.Log
 	o.ServiceName = string(p.ServiceName)
 
 	f, err := InitTracing(context.Background(), WithServiceName(o.ServiceName))
