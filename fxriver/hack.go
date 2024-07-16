@@ -5,7 +5,7 @@ import (
 )
 
 type WorkConfigurer interface {
-	Configure(workers *river.Workers, useTracing bool)
+	Configure(workers *river.Workers)
 }
 
 func Wrap[T river.JobArgs](w river.Worker[T]) WorkConfigurer {
@@ -16,9 +16,6 @@ type wc[T river.JobArgs] struct {
 	worker river.Worker[T]
 }
 
-func (c *wc[T]) Configure(workers *river.Workers, useTracing bool) {
-	if useTracing {
-		c.worker = NewTraceWorker[T](c.worker)
-	}
+func (c *wc[T]) Configure(workers *river.Workers) {
 	river.AddWorker(workers, c.worker)
 }
