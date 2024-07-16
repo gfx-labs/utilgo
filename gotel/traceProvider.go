@@ -7,10 +7,7 @@ import (
 	"log/slog"
 )
 
-type TraceProvider struct {
-	enabled     bool
-	serviceName string
-}
+type TraceProvider struct{}
 
 type Params struct {
 	fx.In
@@ -29,12 +26,9 @@ type Result struct {
 
 func NewTraceProvider(p Params) (r Result, err error) {
 	o := &TraceProvider{}
-	o.serviceName = string(p.ServiceName)
 
-	f, err := InitTracing(context.Background(), WithServiceName(o.serviceName))
+	f, err := InitTracing(context.Background(), WithServiceName(string(p.ServiceName)))
 	if err == nil {
-		o.enabled = true
-
 		p.Lc.Append(fx.Hook{
 			OnStop: f,
 		})
@@ -44,20 +38,4 @@ func NewTraceProvider(p Params) (r Result, err error) {
 
 	r.Output = o
 	return
-}
-
-func (p *TraceProvider) Enabled() bool {
-	if p == nil {
-		return false
-	}
-
-	return p.enabled
-}
-
-func (p *TraceProvider) ServiceName() string {
-	if p == nil {
-		return ""
-	}
-
-	return p.serviceName
 }
