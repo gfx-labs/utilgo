@@ -2,10 +2,9 @@ package retry
 
 import (
 	"math"
+	"math/rand/v2"
 	"sync/atomic"
 	"time"
-
-	"gfx.cafe/util/go/frand"
 )
 
 type BackOff interface {
@@ -132,7 +131,8 @@ func (b *ExponentialBackOff) CalcDuration(retries int64) time.Duration {
 	// so a jitter of 0 means no jitter.
 	dur2 := (float64(b.Min)*math.Pow(b.Factor, float64(retries+1)) - dur) * b.Jitter
 	// now pick a random duration between dur and dur+dur2
-	d := time.Duration(frand.IntRange(int(dur), int(dur+dur2)))
+	//d := time.Duration(frand.IntRange(int(dur), int(dur+dur2)))
+	d := time.Duration(int(dur) + rand.IntN(int(dur2)))
 	if d > b.Max {
 		return b.Max
 	}
