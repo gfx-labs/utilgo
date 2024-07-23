@@ -53,17 +53,8 @@ func NewLogForTracing(ctx context.Context, span trace.Span, level slog.Level) *s
 // For our purposes we are interested in:
 // isEnabledTracing(level) || ((next != nil) && next.Enabled(level))
 func (h *TraceLogHandler) Enabled(ctx context.Context, level slog.Level) (ok bool) {
-	if h.level != nil {
-		ok = level >= *h.level
-	} else if h.next == nil {
-		ok = level >= slog.LevelInfo
-	}
-
-	if !ok && (h.next != nil) {
-		ok = h.next.Enabled(ctx, level)
-	}
-
-	return
+	// if we don't want it, does the next handler
+	return h.isEnabledTracing(ctx, level) || ((h.next != nil) && h.next.Enabled(ctx, level))
 }
 
 // isEnabledTrace determines if the specified level is enabled for Tracing
@@ -76,10 +67,18 @@ func (h *TraceLogHandler) Enabled(ctx context.Context, level slog.Level) (ok boo
 func (h *TraceLogHandler) isEnabledTracing(ctx context.Context, level slog.Level) (ok bool) {
 	if h.level != nil {
 		ok = level >= *h.level
-	} else if h.next != nil {
-		ok = h.next.Enabled(ctx, level)
 	} else {
 		ok = level >= slog.LevelInfo
+	}
+
+	// is the span / current span recording?
+	if ok {
+		span := h.span
+		if span == nil {
+			// this will always return a span
+			span = trace.SpanFromContext(ctx)
+		}
+		ok = span.IsRecording()
 	}
 
 	return ok
@@ -117,6 +116,8 @@ func (h *TraceLogHandler) isEnabledTracing(ctx context.Context, level slog.Level
 //     It is likely that we will improve this implementation, but what you see
 //     is what you get for now
 func (h *TraceLogHandler) Handle(ctx context.Context, r slog.Record) error {
+	// if the span is being recorded and the level is appropriate for tracing
+	// then log an event / error via the span
 	if h.isEnabledTracing(ctx, r.Level) {
 		var attrs []attribute.KeyValue
 
@@ -138,10 +139,18 @@ func (h *TraceLogHandler) Handle(ctx context.Context, r slog.Record) error {
 			})
 		}
 
+		// use the associated span, or the span in-effect for the context
+		span := h.span
+		if span == nil {
+			// this will always return a span
+			span = trace.SpanFromContext(ctx)
+		}
+
+		// use span (not h.span) because it is always non-nil
 		if r.Level == slog.LevelError {
-			h.span.RecordError(fmt.Errorf(r.Message), trace.WithAttributes(attrs...))
+			span.RecordError(fmt.Errorf(r.Message), trace.WithAttributes(attrs...))
 		} else {
-			h.span.AddEvent(r.Message, trace.WithAttributes(attrs...))
+			span.AddEvent(r.Message, trace.WithAttributes(attrs...))
 		}
 	}
 
