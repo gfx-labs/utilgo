@@ -9,7 +9,6 @@ import (
 )
 
 type TraceLogHandler struct {
-	span  trace.Span
 	level *slog.Level
 	goas  []groupOrAttrs
 
@@ -18,26 +17,26 @@ type TraceLogHandler struct {
 
 // NewTraceLogHandler creates an instance of [TraceLogHandler] with an optional
 // [slog.Logger] and/or tracing specific [slog.LogLevel]
-func NewTraceLogHandler(ctx context.Context, span trace.Span, next slog.Handler, level *slog.Level) slog.Handler {
-	return &TraceLogHandler{span: span, next: next, level: level}
+func NewTraceLogHandler(next slog.Handler, level *slog.Level) slog.Handler {
+	return &TraceLogHandler{next: next, level: level}
 }
 
 // NewLogWithTracing creates a new [slog.Logger] by adding a TraceLogHandler to
 // an existing [slog.Logger]
-func NewLogWithTracing(ctx context.Context, span trace.Span, log *slog.Logger) *slog.Logger {
-	return slog.New(NewTraceLogHandler(ctx, span, log.Handler(), nil))
+func NewLogWithTracing(log *slog.Logger) *slog.Logger {
+	return slog.New(NewTraceLogHandler(log.Handler(), nil))
 }
 
 // NewLogWithTracingAndLevel creates a new [slog.Logger] by adding a TraceLogHandler to
 // an existing [slog.Logger] with a custom [slog.Level] specific to tracing
-func NewLogWithTracingAndLevel(ctx context.Context, span trace.Span, log *slog.Logger, level slog.Level) *slog.Logger {
-	return slog.New(NewTraceLogHandler(ctx, span, log.Handler(), &level))
+func NewLogWithTracingAndLevel(log *slog.Logger, level slog.Level) *slog.Logger {
+	return slog.New(NewTraceLogHandler(log.Handler(), &level))
 }
 
 // NewLogForTracing creates a new [slog.Logger] with a TraceLogHandler and a
 // specified [slog.Level]
-func NewLogForTracing(ctx context.Context, span trace.Span, level slog.Level) *slog.Logger {
-	return slog.New(NewTraceLogHandler(ctx, span, nil, &level))
+func NewLogForTracing(level slog.Level) *slog.Logger {
+	return slog.New(NewTraceLogHandler(nil, &level))
 }
 
 // Enabled reports whether the handler handles records at the given level.
@@ -71,14 +70,10 @@ func (h *TraceLogHandler) isEnabledTracing(ctx context.Context, level slog.Level
 		ok = level >= slog.LevelInfo
 	}
 
-	// is the span / current span recording?
+	// is the current span recording?
 	if ok {
-		span := h.span
-		if span == nil {
-			// this will always return a span
-			span = trace.SpanFromContext(ctx)
-		}
-		ok = span.IsRecording()
+		// this will always return a span
+		ok = trace.SpanFromContext(ctx).IsRecording()
 	}
 
 	return ok
@@ -139,12 +134,8 @@ func (h *TraceLogHandler) Handle(ctx context.Context, r slog.Record) error {
 			})
 		}
 
-		// use the associated span, or the span in-effect for the context
-		span := h.span
-		if span == nil {
-			// this will always return a span
-			span = trace.SpanFromContext(ctx)
-		}
+		// this will always return a span
+		span := trace.SpanFromContext(ctx)
 
 		// use span (not h.span) because it is always non-nil
 		if r.Level == slog.LevelError {
