@@ -48,6 +48,7 @@ type config struct {
 	traceExporter        trace.SpanExporter
 	endpoint             string
 	exporterBatchTimeout *time.Duration
+	sampler              trace.Sampler
 	propagators          propagation.TextMapPropagator
 	traceLogLevel        slog.Level
 }
@@ -91,6 +92,12 @@ func WithDefaultBatchTimeout() Option {
 	})
 }
 
+func WithSampler(sampler trace.Sampler) Option {
+	return optionFunc(func(config *config) {
+		config.sampler = sampler
+	})
+}
+
 func WithTextMapPropagator(propagator propagation.TextMapPropagator) Option {
 	return optionFunc(func(config *config) {
 		config.propagators = propagator
@@ -120,6 +127,10 @@ func newConfig(ctx context.Context, options ...Option) (*config, error) {
 	}
 	for _, option := range options {
 		option.apply(config)
+	}
+
+	if config.sampler == nil {
+		config.sampler = trace.AlwaysSample()
 	}
 
 	if config.propagators == nil {
@@ -180,7 +191,8 @@ func initTracing(ctx context.Context, config *config) (ShutdownFunc, error) {
 	// create the traceProvider and batch all span exports
 	traceProvider := trace.NewTracerProvider(
 		batchOption,
-		trace.WithResource(r))
+		trace.WithResource(r),
+		trace.WithSampler(config.sampler))
 
 	// set the text map propagator
 	otel.SetTextMapPropagator(config.propagators)
