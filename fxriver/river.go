@@ -19,7 +19,10 @@ func migrate(ctx context.Context, riverPgxPool *pgxpool.Pool) error {
 		return err
 	}
 	riverPgx := riverpgxv5.New(riverPgxPool)
-	migrator := rivermigrate.New(riverPgx, nil)
+	migrator, err := rivermigrate.New(riverPgx, nil)
+	if err != nil {
+		return err
+	}
 	_, err = migrator.Migrate(ctx, rivermigrate.DirectionUp, nil)
 	if err != nil {
 		return err
