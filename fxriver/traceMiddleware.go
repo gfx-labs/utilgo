@@ -21,7 +21,7 @@ func NewTraceMiddleware() rivertype.WorkerMiddleware {
 type traceWorkerMiddleware struct {
 	// embed JobInsertMiddlewareDefaults for forward compatibility
 	// in case additional methods are added to the interface:
-	river.JobInsertMiddlewareDefaults
+	river.WorkerMiddlewareDefaults
 }
 
 func (m *traceWorkerMiddleware) Work(ctx context.Context, job *rivertype.JobRow, doInner func(ctx context.Context) error) error {
