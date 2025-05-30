@@ -8,7 +8,7 @@ require (
 	anime.bike/hrd v0.0.0-20240702041851-931ec40bba56
 	github.com/c2h5oh/datasize v0.0.0-20231215233829-aa82cc1e6500
 	github.com/cloudevents/sdk-go/v2 v2.15.2
-	github.com/cristalhq/aconfig v0.18.6
+	github.com/cristalhq/aconfig v0.18.7
 	github.com/fatih/structtag v1.2.0
 	github.com/georgysavva/scany/v2 v2.1.3
 	github.com/go-chi/chi/v5 v5.1.0
