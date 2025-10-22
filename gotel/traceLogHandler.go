@@ -2,10 +2,12 @@ package gotel
 
 import (
 	"context"
+	"errors"
 	"fmt"
+	"log/slog"
+
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/trace"
-	"log/slog"
 )
 
 type TraceLogHandler struct {
@@ -139,7 +141,7 @@ func (h *TraceLogHandler) Handle(ctx context.Context, r slog.Record) error {
 
 		// use span (not h.span) because it is always non-nil
 		if r.Level == slog.LevelError {
-			span.RecordError(fmt.Errorf(r.Message), trace.WithAttributes(attrs...))
+			span.RecordError(errors.New(r.Message), trace.WithAttributes(attrs...))
 		} else {
 			span.AddEvent(r.Message, trace.WithAttributes(attrs...))
 		}
