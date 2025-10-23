@@ -8,6 +8,7 @@ import (
 	"github.com/lmittmann/tint"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
+	"gfx.cafe/util/go/whereami"
 )
 
 func NewLogger() *slog.Logger {
@@ -15,6 +16,16 @@ func NewLogger() *slog.Logger {
 	if GO_LOG := os.Getenv("GO_LOG"); GO_LOG != "" {
 		slog_level = ParseSlogFilter(slog.LevelInfo, GO_LOG)
 	}
+
+	// Use JSON handler in Docker or Kubernetes environments
+	if whereami.IsDocker() || whereami.IsKubernetes() {
+		return slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
+			AddSource: true,
+			Level:     slog_level,
+		}))
+	}
+
+	// Use tint handler for local development
 	return slog.New(tint.NewHandler(os.Stdout, &tint.Options{
 		AddSource: true,
 		Level:     slog_level,
