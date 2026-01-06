@@ -14,6 +14,10 @@ type Execer interface {
 
 type Querier = pgxscan.Querier
 
+type RowQuerier interface {
+	QueryRow(ctx context.Context, sql string, arguments ...any) pgx.Row
+}
+
 type Batcher interface {
 	SendBatch(ctx context.Context, b *pgx.Batch) (br pgx.BatchResults)
 }
@@ -27,4 +31,14 @@ type ExecBatchQuerier interface {
 	Execer
 	Batcher
 	Querier
+}
+
+type ExecRowQuerier interface {
+	ExecQuerier
+	RowQuerier
+}
+
+type ExecBatchRowQuerier interface {
+	ExecBatchQuerier
+	RowQuerier
 }
