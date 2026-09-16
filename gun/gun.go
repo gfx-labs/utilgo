@@ -5,7 +5,7 @@ import (
 	"os"
 	"path"
 
-	"gfx.cafe/util/go/gun/gunyaml"
+	"github.com/gfx-labs/utilgo/gun/gunyaml"
 	"github.com/cristalhq/aconfig"
 	"github.com/joho/godotenv"
 )

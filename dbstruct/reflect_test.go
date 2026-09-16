@@ -3,7 +3,7 @@ package dbstruct_test
 import (
 	"testing"
 
-	"gfx.cafe/util/go/dbstruct"
+	"github.com/gfx-labs/utilgo/dbstruct"
 	"github.com/stretchr/testify/require"
 )
 

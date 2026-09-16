@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"time"
 
-	"gfx.cafe/util/go/fxplus"
+	"github.com/gfx-labs/utilgo/fxplus"
 	"github.com/go-chi/chi/v5"
 	"go.uber.org/fx"
 )

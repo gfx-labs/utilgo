@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"gfx.cafe/util/go/lexer"
+	"github.com/gfx-labs/utilgo/lexer"
 )
 
 const (

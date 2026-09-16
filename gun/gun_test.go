@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"gfx.cafe/util/go/gun"
+	"github.com/gfx-labs/utilgo/gun"
 )
 
 var exampleConfigOne struct {

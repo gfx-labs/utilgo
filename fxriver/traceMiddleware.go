@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"strings"
 
-	"gfx.cafe/util/go/gotel"
+	"github.com/gfx-labs/utilgo/gotel"
 	"github.com/riverqueue/river"
 	"github.com/riverqueue/river/rivertype"
 	"go.opentelemetry.io/otel"

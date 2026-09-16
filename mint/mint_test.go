@@ -6,8 +6,8 @@ import (
 	"sync/atomic"
 	"testing"
 
-	"gfx.cafe/util/go/mint"
-	"gfx.cafe/util/go/mint/hub"
+	"github.com/gfx-labs/utilgo/mint"
+	"github.com/gfx-labs/utilgo/mint/hub"
 )
 
 type event struct {

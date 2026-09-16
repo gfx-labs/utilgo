@@ -8,7 +8,7 @@ import (
 	"github.com/lmittmann/tint"
 	"go.uber.org/fx"
 	"go.uber.org/fx/fxevent"
-	"gfx.cafe/util/go/whereami"
+	"github.com/gfx-labs/utilgo/whereami"
 )
 
 func NewLogger() *slog.Logger {

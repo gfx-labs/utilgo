@@ -1,4 +1,4 @@
-module gfx.cafe/util/go
+module github.com/gfx-labs/utilgo
 
 go 1.24.0
 

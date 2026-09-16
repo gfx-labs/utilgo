@@ -4,7 +4,7 @@ import (
 	"reflect"
 	"testing"
 
-	"gfx.cafe/util/go/lambda"
+	"github.com/gfx-labs/utilgo/lambda"
 	"github.com/stretchr/testify/assert"
 )
 

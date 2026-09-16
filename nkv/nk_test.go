@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"gfx.cafe/util/go/nkv"
-	"gfx.cafe/util/go/retry"
+	"github.com/gfx-labs/utilgo/nkv"
+	"github.com/gfx-labs/utilgo/retry"
 	"github.com/stretchr/testify/assert"
 	"golang.org/x/sync/errgroup"
 )

@@ -9,7 +9,7 @@ package mint
 import (
 	"context"
 
-	"gfx.cafe/util/go/mint/hub"
+	"github.com/gfx-labs/utilgo/mint/hub"
 )
 
 // Emitter holds all active consumers and Emit hooks.

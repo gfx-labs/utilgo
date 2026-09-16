@@ -9,8 +9,8 @@ import (
 	"sync"
 	"time"
 
-	"gfx.cafe/util/go/lambda"
-	"gfx.cafe/util/go/retry"
+	"github.com/gfx-labs/utilgo/lambda"
+	"github.com/gfx-labs/utilgo/retry"
 	"golang.org/x/sync/singleflight"
 )
 

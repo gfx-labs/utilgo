@@ -2,7 +2,7 @@ package gotel
 
 import (
 	"context"
-	"gfx.cafe/util/go/fxplus"
+	"github.com/gfx-labs/utilgo/fxplus"
 	"go.uber.org/fx"
 	"log/slog"
 )
