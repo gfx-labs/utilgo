@@ -165,10 +165,12 @@ func initTracing(ctx context.Context, config *config) (ShutdownFunc, error) {
 		hostName = "<unknown>"
 	}
 
+	// These attributes are stable across schema versions. Leave the overlay
+	// schemaless so it inherits the SDK resource's schema instead of conflicting
+	// when an application selects a newer OpenTelemetry SDK.
 	r, err := resource.Merge(
 		resource.Default(),
-		resource.NewWithAttributes(
-			semconv.SchemaURL,
+		resource.NewSchemaless(
 			semconv.HostName(hostName),
 			semconv.ServiceName(config.serviceName),
 			semconv.ServiceNamespace(config.serviceNamespace),

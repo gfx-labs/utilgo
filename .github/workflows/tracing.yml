@@ -1,0 +1,25 @@
+name: Tracing compatibility
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  gotel:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        otel: [pinned, v1.40.0]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.25.x'
+      - name: Select consumer OpenTelemetry version
+        if: matrix.otel != 'pinned'
+        run: go get go.opentelemetry.io/otel@${{ matrix.otel }} go.opentelemetry.io/otel/sdk@${{ matrix.otel }}
+      - name: Test tracing initialization and resource compatibility
+        run: go test -race ./gotel
